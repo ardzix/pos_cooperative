@@ -1,0 +1,82 @@
+{% extends "../layout/adminLTE2.html" %}
+{% load static compress %}
+
+
+{% block content %}
+<section class="content">
+        <div class="row">
+          <div class="col-xs-12"><div class="box box-info">
+              <div class="box-header">
+                <h3 class="box-title col-sm-3" >Profile</h3>
+                <div class="btn-group pull-right">
+                  <button type="button" class="btn btn-instagram" onclick="window.location.replace('{% url 'core:profile-form' %}');"><i class="fa fa-pencil"></i>&nbsp;Create New</button>
+                </div>
+              </row>
+              </div>
+              <!-- /.box-header -->
+              <div class="box-body">
+                <table id="mainTable" class="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Created at</th>
+                        <th></th>
+                    </tr>
+                  </thead>
+                  
+                </table>
+              </div>
+              <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </section>
+      <!-- /.content -->
+
+{% endblock %}
+
+
+{% block js %}
+
+<!-- jQuery 2.2.3 -->
+<script src="{% static 'backend/plugins/jQuery/jquery-2.2.3.min.js' %}"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="{% static 'backend/bootstrap/js/bootstrap.min.js' %}"></script>
+<!-- DataTables -->
+<script src="{% static 'backend/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'backend/plugins/datatables/dataTables.bootstrap.min.js' %}"></script>
+<!-- SlimScroll -->
+<script src="{% static 'backend/plugins/slimScroll/jquery.slimscroll.min.js' %}"></script>
+<!-- FastClick -->
+<script src="{% static 'backend/plugins/fastclick/fastclick.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'backend/dist/js/app.min.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'backend/dist/js/demo.js' %}"></script>
+
+<script src="{% static 'core/datatable-fire.js' %}"></script>
+
+
+<!-- page script -->
+<script>
+
+$(function () {
+    $('#mainTable').DataTable({
+      "processing": true,
+      "serverSide": true,
+      "columns": [
+          null,
+          null,
+          {'searchable':false},
+          {'searchable':false, 'sortable':false},
+
+        ],
+      "ajax": ""
+    });
+  });
+</script>
+{% endblock %}

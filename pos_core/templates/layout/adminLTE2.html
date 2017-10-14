@@ -1,0 +1,174 @@
+{% load static compress %}
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>{% block title %}POS Koperasi App{% endblock %}</title>
+
+  {% block meta %}
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  {% endblock %}
+
+  {% block css %}
+  <!-- Bootstrap 3.3.6 -->
+  <link rel="stylesheet" href="{% static 'backend/bootstrap/css/bootstrap.min.css' %}">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'backend/dist/css/AdminLTE.min.css' %}">
+  <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+  <link rel="stylesheet" href="{% static 'backend/dist/css/skins/_all-skins.min.css' %}">
+  {% endblock %}
+
+  {% block js-top %}
+  {% endblock %}
+  
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js' %}"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js' %}"></script>
+  <![endif]-->
+</head>
+<body class="hold-transition skin-blue sidebar-collapse sidebar-mini" style="height: 100%">
+<div class="wrapper">
+{% block header %}
+  <header class="main-header">
+
+    <!-- Logo -->
+    <a href="http://{{ request.get_host }}/blackend/" class="logo">
+      <!-- mini logo for sidebar mini 50x50 pixels -->
+      <span class="logo-mini"><b>:D</b></span>
+      <!-- logo for regular state and mobile devices -->
+      <span class="logo-lg"><b>:Dagelan</b> Web Admin</span>
+    </a>
+
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top">
+      <!-- Sidebar toggle button-->
+      <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+      <!-- Navbar Right Menu -->
+      <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+          <!-- User Account: style can be found in dropdown.less -->
+          <li class="dropdown user user-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <img src="{% static 'backend/dist/img/user2-160x160.jpg' %}" class="user-image" id="right-top-userimage" alt="User Image">
+              <span class="hidden-xs">{{ request.user.username }}</span> &nbsp;<i class="fa fa-gears"></i>
+            </a>
+            <ul class="dropdown-menu">
+              <!-- User image -->
+              <li class="user-header">
+                <img src="{% static 'backend/dist/img/user2-160x160.jpg' %}" id="right-top-dropeddown-userimage" class="img-circle" alt="User Image">
+
+                <p>
+                  {{request.user.first_name}} {{request.user.last_name}}
+                </p>
+              </li>
+              <!-- Menu Footer-->
+              <li class="user-footer">
+                <div class="pull-right">
+                <a href="http://{{ request.get_host }}/blackend/change_password" class="btn btn-default btn-flat">Change Password</a>
+                <a href="http://{{ request.get_host }}/blackend/edit_profile" class="btn btn-default btn-flat">Edit Profile</a>
+                <a href="http://{{ request.get_host }}/blackend/logout" class="btn btn-default btn-flat" style="margin-top:10px">Sign out</a>
+                </div>
+                
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+    </nav>
+  </header>
+  {% endblock %}
+
+  {% block sidebar %}
+  <!-- Left side column. contains the logo and sidebar -->
+  <aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+      <!-- Sidebar user panel -->
+      <div class="user-panel">
+        <div class="pull-left image">
+          <img src="{% static 'backend/dist/img/user2-160x160.jpg' %}" id="avatar-image-sidebar" class="img-circle" alt="User Image">
+        </div>
+        <div class="pull-left info">
+          <p>{{request.user.first_name}} {{request.user.last_name}}</p>
+        </div>
+      </div>
+      
+      <!-- sidebar menu: : style can be found in sidebar.less -->
+      <ul class="sidebar-menu">
+        <li class="header">MAIN NAVIGATION</li>
+        <!-- This sidebar menu will only be seen by users in Admin group -->
+        {% include 'layout/sidebar.html' %}        
+      </ul>
+    </section>
+    <!-- /.sidebar -->
+  </aside>
+  {% endblock %}
+
+  {% block wrapper1 %}
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        {% block content_title %}
+        Dashboard
+        {% endblock %}
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="http://{{ request.get_host }}/blackend/"><i class="fa fa-dashboard"></i> Home</a></li>
+        {% block breadcumb %}
+        <li class="active">Dashboard</li>
+        {% endblock %}
+      </ol>
+    </section>
+{% endblock %}
+
+    {% block content %}
+
+    {% endblock %}
+  {% block wrapper2 %}
+  </div>
+  <!-- /.content-wrapper -->
+  {% endblock %}
+  {% block footer %}
+
+  <footer class="main-footer">
+    <div class="pull-right hidden-xs">
+      <b>Version</b> 1.1.1
+    </div>
+    Template by <strong><a href="http://almsaeedstudio.com" target="blank">Almsaeed Studio</a></strong> - Engine by <strong><a href="http://infia.co.id" target="blank">Infia IT Div</a></strong> ( <strong><a href="mailto:ardzix@hotmail.com">Arif Dzikrullah</a></strong> and <strong><a href="mailto:mailzulk93@gmail.com">Ismail Zulkarnaen</a></strong> )
+  </footer>
+  {% endblock %}
+
+  
+
+</div>
+<!-- ./wrapper -->
+{% compress js %}
+
+{% block js %}
+<!-- jQuery 2.2.3 -->
+<script src="{% static 'backend/plugins/jQuery/jquery-2.2.3.min.js' %}"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="{% static 'backend/bootstrap/js/bootstrap.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'backend/dist/js/app.min.js' %}"></script>
+{% endblock %}
+
+{% endcompress %}
+</body>
+</html>
