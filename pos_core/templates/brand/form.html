@@ -1,0 +1,96 @@
+{% extends "../layout/adminLTE2.html" %}
+{% load static compress %}
+
+
+{% block content %}
+<section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Brand Form</h3>
+                </div>
+                <form role="form" method="POST">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{form.display_name.label}}</label>
+                                    {{form.display_name}}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{form.short_name.label}}</label>
+                                    {{form.short_name}}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>{{form.description.label}}</label>
+                                    {{form.description}}
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                    <div class="box-footer">
+
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.box --> 
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+<!-- /.content -->
+{% endblock %}
+
+{% block js %}
+<!-- jQuery 2.2.3 -->
+<script src="{% static 'backend/plugins/jQuery/jquery-2.2.3.min.js' %}"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="{% static 'backend/bootstrap/js/bootstrap.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'backend/dist/js/app.min.js' %}"></script>
+
+<script type="text/javascript">
+// Script to automatically fill slug form with the same value from name form
+    $( "#id_display_name" ).keyup(function() {
+        $("#id_short_name").val(convertToSlug($("#id_display_name").val()))
+    });
+
+    function convertToSlug(Text)
+    {
+        return Text
+            .toLowerCase()
+            .replace(/[^\w ]+/g,'')
+            .replace(/ +/g,'-')
+            ;
+    }
+</script>
+
+               
+<script>
+    var simplemde = new SimpleMDE({ 
+        element: document.getElementById("{{form.description.auto_id}}")
+        })
+</script>
+
+{% endblock %}
+
+{% block js-top %}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+
+{% endblock %}

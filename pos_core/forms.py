@@ -47,3 +47,59 @@ class ProfileForm(ModelForm):
             'gender': Select(attrs={'class':'form-control select2'}),
             'is_verified': CheckboxInput(attrs={'checked':'checked'}),
         }
+
+
+class InvestorForm(ModelForm):
+    already_added = []
+
+    for v in Investor.objects.filter(deleted_at__isnull = True).all():
+        already_added.append(v.created_by.id)
+
+    user = ModelChoiceField (
+        queryset = User.objects.exclude(
+            id__in = already_added
+        ),
+        required=False
+    )
+    user.widget = Select(attrs={'class':'form-control select2'})
+    
+    class Meta:
+        model = Investor
+        exclude = settings.EXCLUDE_FORM_FIELDS 
+        widgets = {
+            'member_id': TextInput(attrs={'class':'form-control'}),
+            'investor_type': Select(attrs={'class':'form-control select2'}),
+        }
+
+class BrandForm(ModelForm):
+    class Meta:
+        model = Brand
+        exclude = settings.EXCLUDE_FORM_FIELDS
+        widgets = {
+            'display_name': TextInput(attrs={'class':'form-control'}),
+            'short_name': TextInput(attrs={'class':'form-control'}),
+        }
+
+class ProductForm(ModelForm):
+    class Meta:
+        model = Product
+        exclude = settings.EXCLUDE_FORM_FIELDS
+        widgets = {
+            'category': Select(attrs={'class':'form-control select2'}),
+            'brand': Select(attrs={'class':'form-control select2'}),
+            'sku': TextInput(attrs={'class':'form-control'}),
+            'display_name': TextInput(attrs={'class':'form-control'}),
+            'short_name': TextInput(attrs={'class':'form-control'}),
+            'base_price': NumberInput(attrs={'class':'form-control'}),
+            'is_available': CheckboxInput(attrs={'checked':'checked'}),
+        }
+
+class StockForm(ModelForm):
+    class Meta:
+        model = Stock
+        exclude = settings.EXCLUDE_FORM_FIELDS + ("latest_stock", "last_opnamed_at", "last_opnamed_at_timestamp", "last_opnamed_by")
+        widgets = {
+            'product': Select(attrs={'class':'form-control select2'}),
+            'first_stock': NumberInput(attrs={'class':'form-control'}),
+        }
+        

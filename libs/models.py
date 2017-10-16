@@ -3,7 +3,6 @@ from itertools import chain
 from core.libs.moment import to_timestamp
 from core.libs.base62 import base62_encode
 from core.tasks.media import generate_all_sizes
-from core.structures.common.models import Log
 from django.db import models
 from django.utils import timezone
 
@@ -77,14 +76,7 @@ class _BaseAbstract(models.Model):
         return super(_BaseAbstract, self).save(*args, **kwargs)
 
     def log(self, user, message):
-        log = Log()
-        log.content_type = ContentType.objects.get_for_model(self)
-        log.object_id = self.id
-        log.logged_by = user
-        log.message = message
-        log.save()
-
-        return log
+        pass
 
     # Getter
     def get_created_at(self):
