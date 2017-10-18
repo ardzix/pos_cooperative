@@ -102,4 +102,20 @@ class StockForm(ModelForm):
             'product': Select(attrs={'class':'form-control select2'}),
             'first_stock': NumberInput(attrs={'class':'form-control'}),
         }
+
+class DiscountForm(ModelForm):
+    class Meta:
+        model = Discount
+        exclude = settings.EXCLUDE_FORM_FIELDS + ("start_date_at_timestamp", "end_date_at_timestamp")
+        widgets = {
+            'display_name': TextInput(attrs={'class':'form-control'}),
+            'short_name': TextInput(attrs={'class':'form-control'}),
+            'discount_type': Select(attrs={'class':'form-control select2'}),
+            'reduction': NumberInput(attrs={'class':'form-control', 'max':100, 'min':0}),
+            'start_date_at': DateTimeInput(attrs={'class':'form-control'}),
+            'end_date_at': DateTimeInput(attrs={'class':'form-control'}),
+        }
+        labels = {
+            'reduction' : 'Discount (%)'
+        }
         

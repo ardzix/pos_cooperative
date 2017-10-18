@@ -125,6 +125,14 @@ class Discount(BaseModelGeneric):
         verbose_name = "Discount"
         verbose_name_plural = "Discounts"
 
+class DiscountProduct(BaseModelGeneric):
+    discount = models.ForeignKey(Discount, related_name="%(app_label)s_%(class)s_discount")
+    product = models.ForeignKey(Product, related_name="%(app_label)s_%(class)s_product")
+
+    class Meta:
+        verbose_name = "Discount Product"
+        verbose_name_plural = "Discount Products"
+
 
 class Sale(BaseModelGeneric):
     product = models.ForeignKey(Product, related_name="%(app_label)s_%(class)s_product")

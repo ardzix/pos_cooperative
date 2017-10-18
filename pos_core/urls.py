@@ -5,6 +5,7 @@ from pos_core.views.investor import *
 from pos_core.views.brand import *
 from pos_core.views.product import *
 from pos_core.views.stock import *
+from pos_core.views.discount import *
 
 urlpatterns = [
     url(r'^role/$', RoleView.as_view(), name='role'),
@@ -24,4 +25,7 @@ urlpatterns = [
 
     url(r'^stock/$', StockView.as_view(), name='stock'),    
     url(r'^stock/form/$', StockFormView.as_view(), name='stock-form'),
+
+    url(r'^discount/$', DiscountView.as_view(), name='discount'),
+    url(r'^discount/form/$', DiscountFormView.as_view(), name='discount-form'),
 ]
