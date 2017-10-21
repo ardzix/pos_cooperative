@@ -1,0 +1,98 @@
+{% extends "../layout/adminLTE2.html" %}
+{% load static compress %}
+
+
+{% block content %}
+<section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Discount Product Form</h3>
+                </div>
+                <form role="form" method="POST">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{form.discount.label}}</label>
+                                    {{form.discount}}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{form.product.label}}</label>
+                                    {{form.product}}
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                    <div class="box-footer">
+
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.box --> 
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+<!-- /.content -->
+{% endblock %}
+
+{% block css %}
+<!-- Bootstrap 3.3.6 -->
+<link rel="stylesheet" href="{% static 'backend/bootstrap/css/bootstrap.min.css' %}">
+<!-- bootstrap datepicker -->
+  <link rel="stylesheet" href="{% static 'backend/plugins/datepicker/datepicker3.css' %}">
+    <!-- Bootstrap time Picker -->
+  <link rel="stylesheet" href="{% static 'backend/plugins/timepicker/bootstrap-timepicker.min.css' %}">
+  <link rel="stylesheet" href="{% static 'backend/bootstrap/css/bootstrap.min.css' %}">
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<!-- Ionicons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+<!-- Select2 -->
+<link rel="stylesheet" href="{% static 'backend/plugins/select2/select2.min.css' %}">
+<!-- Theme style -->
+<link rel="stylesheet" href="{% static 'backend/dist/css/AdminLTE.min.css' %}">
+<!-- AdminLTE Skins. Choose a skin from the css/skins
+   folder instead of downloading all of them to reduce the load. -->
+<link rel="stylesheet" href="{% static 'backend/dist/css/skins/_all-skins.min.css' %}">
+{% endblock %}
+
+{% block js %}
+<!-- jQuery 2.2.3 -->
+<script src="{% static 'backend/plugins/jQuery/jquery-2.2.3.min.js' %}"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="{% static 'backend/bootstrap/js/bootstrap.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'backend/dist/js/app.min.js' %}"></script>
+<!-- CK Editor -->
+<!-- <script src="https://cdn.ckeditor.com/4.5.7/standard/ckeditor.js"></script> -->
+
+<script src="{% static 'backend/dist/js/ckeditor/ckeditor.js' %}"></script>
+<!-- Select2 -->
+<script src="{% static 'backend/plugins/select2/select2.full.min.js' %}"></script>
+<!-- bootstrap datepicker -->
+<script src="{% static 'backend/plugins/datepicker/bootstrap-datepicker.js' %}"></script>
+<!-- bootstrap time picker -->
+<script src="{% static 'backend/plugins/timepicker/bootstrap-timepicker.min.js' %}"></script>
+<!-- InputMask -->
+<script src="{% static 'backend/plugins/input-mask/jquery.inputmask.js' %}"></script>
+<script src="{% static 'backend/plugins/input-mask/jquery.inputmask.date.extensions.js' %}"></script>
+<script src="{% static 'backend/plugins/input-mask/jquery.inputmask.extensions.js' %}"></script>
+               
+<script>
+    
+    $(".select2").select2();
+
+</script>
+
+{% endblock %}

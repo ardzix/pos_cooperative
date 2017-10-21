@@ -28,4 +28,9 @@ urlpatterns = [
 
     url(r'^discount/$', DiscountView.as_view(), name='discount'),
     url(r'^discount/form/$', DiscountFormView.as_view(), name='discount-form'),
+    url(r'^discount-product/$', DiscountProductView.as_view(), name='discount-product'),
+    url(r'^discount-product/form/$', DiscountProductFormView.as_view(), name='discount-product-form'),
+
+    url(r'^sale/$', DiscountView.as_view(), name='sale'),
+    
 ]

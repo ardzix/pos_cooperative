@@ -2,11 +2,11 @@
 {% load static compress %}
 
 {% block breadcumb %}
-<li class="active">Investor</li>
+<li class="active">Discount Product</li>
 {% endblock %}
 
 {% block content_title %}
-Investor
+Discount Product
 {% endblock %}
 
 {% block content %}
@@ -14,9 +14,9 @@ Investor
         <div class="row">
           <div class="col-xs-12"><div class="box box-info">
               <div class="box-header">
-                <h3 class="box-title col-sm-3" >Investor</h3>
+                <h3 class="box-title col-sm-3" >Discount Product</h3>
                 <div class="btn-group pull-right">
-                  <button type="button" class="btn btn-instagram" onclick="window.location.replace('{% url 'core:investor-form' %}');"><i class="fa fa-pencil"></i>&nbsp;Create New</button>
+                  <button type="button" class="btn btn-instagram" onclick="window.location.replace('{% url 'core:discount-product-form' %}');"><i class="fa fa-pencil"></i>&nbsp;Create New</button>
                 </div>
               </row>
               </div>
@@ -26,7 +26,6 @@ Investor
                   <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Member Id</th>
                         <th>Name</th>
                         <th>Created at</th>
                         <th></th>
@@ -74,10 +73,10 @@ Investor
 
 $(function () {
     $('#mainTable').DataTable({
+      "order": [[ 1, "asc" ]],
       "processing": true,
       "serverSide": true,
       "columns": [
-          null,
           null,
           null,
           {'searchable':false},

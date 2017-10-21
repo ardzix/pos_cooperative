@@ -93,6 +93,9 @@ class ProductForm(ModelForm):
             'base_price': NumberInput(attrs={'class':'form-control'}),
             'is_available': CheckboxInput(attrs={'checked':'checked'}),
         }
+        labels =  {
+            'sku' : "SKU/Barcode"
+        }
 
 class StockForm(ModelForm):
     class Meta:
@@ -117,5 +120,21 @@ class DiscountForm(ModelForm):
         }
         labels = {
             'reduction' : 'Discount (%)'
+        }
+
+class DiscountProductForm(ModelForm):
+    product = ModelMultipleChoiceField(
+        queryset = Product.objects.filter(
+            deleted_at__isnull = True,
+        ),
+        required=False
+    )
+    product.widget = SelectMultiple(attrs={'class':'form-control select2'})
+
+    class Meta:
+        model = DiscountProduct
+        exclude = settings.EXCLUDE_FORM_FIELDS + ("product", )
+        widgets = {
+            'discount': Select(attrs={'class':'form-control select2'}),            
         }
         
