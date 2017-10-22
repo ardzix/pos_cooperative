@@ -138,3 +138,11 @@ class DiscountProductForm(ModelForm):
             'discount': Select(attrs={'class':'form-control select2'}),            
         }
         
+class SaleForm(ModelForm):
+
+    class Meta:
+        model = Sale
+        exclude = settings.EXCLUDE_FORM_FIELDS + ("status", "discount")
+        widgets = {
+            'product': TextInput(attrs={'class':'form-control', 'readonly':True, 'style':'background-color:white;border:none'}),
+        }

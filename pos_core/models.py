@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from libs.constants import PRODUCT_CATEGORY, GENDER_CHOICES, INVESTOR_TYPE_CHOICE, DISCOUNT_TYPE
+from libs.constants import PRODUCT_CATEGORIES, GENDER_CHOICES, INVESTOR_TYPE_CHOICES, DISCOUNT_TYPES, SALE_STATUSES
 from libs.models import BaseModelGeneric, BaseModelUnique
 from libs.views import ProtectedMixin
 from libs.storages import generate_name, STORAGE_BACKGROUND_COVER, STORAGE_AVATAR
@@ -49,7 +49,7 @@ class Profile(BaseModelUnique):
 
 
 class Investor(BaseModelUnique):
-    investor_type = models.PositiveIntegerField(choices=INVESTOR_TYPE_CHOICE, default=1)
+    investor_type = models.PositiveIntegerField(choices=INVESTOR_TYPE_CHOICES, default=1)
     member_id = models.CharField(max_length=100)
 
     def __unicode__(self):
@@ -74,7 +74,7 @@ class Brand(BaseModelGeneric):
 
 
 class Product(BaseModelGeneric):
-    category = models.PositiveIntegerField(choices=PRODUCT_CATEGORY, default=1)
+    category = models.PositiveIntegerField(choices=PRODUCT_CATEGORIES, default=1)
     brand = models.ForeignKey(Brand, related_name="%(app_label)s_%(class)s_brand")
     sku = models.CharField(max_length=100)
     display_name = models.CharField(max_length=150)
@@ -84,7 +84,16 @@ class Product(BaseModelGeneric):
     description = models.TextField(blank=True, null=True)
 
     def __unicode__(self):
-        return self.display_name
+        return "[%s][%s] %s" % (self.sku, self.brand, self.display_name)
+
+    def get_price(self):
+        return str(self.base_price)
+
+    def get_discount(self):
+        return "-"
+
+    def get_discounted_price(self):
+        return "-"
 
     class Meta:
         verbose_name = "Product"
@@ -110,7 +119,7 @@ class Stock(BaseModelGeneric):
 class Discount(BaseModelGeneric):
     display_name = models.CharField(max_length=100)
     short_name = models.SlugField(max_length=100)
-    discount_type = models.PositiveIntegerField(choices=DISCOUNT_TYPE, default=1)
+    discount_type = models.PositiveIntegerField(choices=DISCOUNT_TYPES, default=1)
     start_date_at = models.DateTimeField(blank=True, null=True)
     start_date_at_timestamp = models.PositiveIntegerField(db_index=True, blank=True, null=True)
     end_date_at = models.DateTimeField(blank=True, null=True)
@@ -138,18 +147,26 @@ class Sale(BaseModelGeneric):
     product = models.ForeignKey(Product, related_name="%(app_label)s_%(class)s_product")
     discount = models.ForeignKey(Discount, related_name="%(app_label)s_%(class)s_discount", blank=True, null=True)
     amount = models.PositiveIntegerField(default=0)
-    sale_at = models.DateTimeField()
-    sale_at_timestamp = models.PositiveIntegerField(db_index=True)
-    sale_by = models.ForeignKey(User, db_index=True, related_name="%(app_label)s_%(class)s_sale_by")
+    status = models.PositiveIntegerField(choices=SALE_STATUSES, default=1)
 
-    def __unicode__(self):
-        return self.display_name
+    # Please not that created_by is filled with buyer info
 
     class Meta:
         verbose_name = "Sale"
         verbose_name_plural = "Sales"
-    
-    
 
 
+class Checkout(BaseModelGeneric):
+    sale = models.ForeignKey(Sale, related_name="%(app_label)s_%(class)s_sale")
+    price = models.PositiveIntegerField(default=0)
+    discount = models.PositiveIntegerField(default=0)
+    paid = models.PositiveIntegerField(default=0)
+    sale_at = models.DateTimeField()
+    sale_at_timestamp = models.PositiveIntegerField(db_index=True)
+    sale_by = models.ForeignKey(User, db_index=True, related_name="%(app_label)s_%(class)s_sale_by")
 
+    # Please not that created_by is filled with buyer info, and sale_by si filled by sales/admin
+
+    class Meta:
+        verbose_name = "Checkout"
+        verbose_name_plural = "Checkouts"

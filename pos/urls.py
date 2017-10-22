@@ -15,12 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.views.generic import RedirectView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^core/', include('pos_core.urls', namespace='core')),
     url(r'^account/', include('account.urls', namespace='account')),
-    # url(r'^401', landing.err401, name='err401'),
-    # url(r'^', landing.err404, name='err404'),
-    # url(r'^$', home, name='index'),
+    url(r'^$', RedirectView.as_view(url='/core/sale')),
 ]
