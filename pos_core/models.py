@@ -6,6 +6,8 @@ from libs.models import BaseModelGeneric, BaseModelUnique
 from libs.views import ProtectedMixin
 from libs.storages import generate_name, STORAGE_BACKGROUND_COVER, STORAGE_AVATAR
 from django.contrib.auth.models import User
+from django.utils import timezone
+from core.libs.moment import to_timestamp
 
 # Create your models here.
 class Role(BaseModelGeneric):
@@ -86,14 +88,30 @@ class Product(BaseModelGeneric):
     def __unicode__(self):
         return "[%s][%s] %s" % (self.sku, self.brand, self.display_name)
 
-    def get_price(self):
-        return str(self.base_price)
-
     def get_discount(self):
-        return "-"
+        if self.applied_discount():
+            return str(self.applied_discount().reduction) + " %"
+        else:
+            return "-"
 
     def get_discounted_price(self):
-        return "-"
+        if self.applied_discount():
+            return float(self.base_price) - (self.applied_discount().reduction * 0.01 * float(self.base_price))
+        else:
+            return "-"
+
+    def get_discounted_price_int(self):
+        if self.applied_discount():
+            return float(self.base_price) - (self.applied_discount().reduction * 0.01 * float(self.base_price))
+        else:
+            return float(self.base_price)
+
+    def applied_discount(self):
+        d = DiscountProduct.objects.filter(product=self).last()
+        if d:
+            return d.discount
+        else:
+            return None
 
     class Meta:
         verbose_name = "Product"
@@ -143,7 +161,33 @@ class DiscountProduct(BaseModelGeneric):
         verbose_name_plural = "Discount Products"
 
 
+class Checkout(BaseModelGeneric):
+    price = models.PositiveIntegerField(default=0)
+    discount = models.PositiveIntegerField(default=0)
+    paid = models.PositiveIntegerField(default=0)
+    sale_at = models.DateTimeField()
+    sale_at_timestamp = models.PositiveIntegerField(db_index=True)
+    sale_by = models.ForeignKey(User, db_index=True, related_name="%(app_label)s_%(class)s_sale_by")
+
+    # Please not that created_by is filled with buyer info, and sale_by si filled by sales/admin
+
+    def save(self, *args, **kwargs):
+        now = timezone.now()
+
+        if self.sale_at is None:
+            self.sale_at = now
+            self.sale_at_timestamp = to_timestamp(self.sale_at)
+
+        instance = super(Checkout, self).save(*args, **kwargs)
+        return instance
+
+    class Meta:
+        verbose_name = "Checkout"
+        verbose_name_plural = "Checkouts"
+
+
 class Sale(BaseModelGeneric):
+    checkout = models.ForeignKey(Checkout, related_name="%(app_label)s_%(class)s_checkout", blank=True, null=True)
     product = models.ForeignKey(Product, related_name="%(app_label)s_%(class)s_product")
     discount = models.ForeignKey(Discount, related_name="%(app_label)s_%(class)s_discount", blank=True, null=True)
     amount = models.PositiveIntegerField(default=0)
@@ -154,19 +198,3 @@ class Sale(BaseModelGeneric):
     class Meta:
         verbose_name = "Sale"
         verbose_name_plural = "Sales"
-
-
-class Checkout(BaseModelGeneric):
-    sale = models.ForeignKey(Sale, related_name="%(app_label)s_%(class)s_sale")
-    price = models.PositiveIntegerField(default=0)
-    discount = models.PositiveIntegerField(default=0)
-    paid = models.PositiveIntegerField(default=0)
-    sale_at = models.DateTimeField()
-    sale_at_timestamp = models.PositiveIntegerField(db_index=True)
-    sale_by = models.ForeignKey(User, db_index=True, related_name="%(app_label)s_%(class)s_sale_by")
-
-    # Please not that created_by is filled with buyer info, and sale_by si filled by sales/admin
-
-    class Meta:
-        verbose_name = "Checkout"
-        verbose_name_plural = "Checkouts"

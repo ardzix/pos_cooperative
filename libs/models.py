@@ -1,8 +1,7 @@
 from __future__ import unicode_literals
 from itertools import chain
-from core.libs.moment import to_timestamp
-from core.libs.base62 import base62_encode
-from core.tasks.media import generate_all_sizes
+from libs.moment import to_timestamp
+from libs.base62 import base62_encode
 from django.db import models
 from django.utils import timezone
 

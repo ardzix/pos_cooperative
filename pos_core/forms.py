@@ -138,11 +138,52 @@ class DiscountProductForm(ModelForm):
             'discount': Select(attrs={'class':'form-control select2'}),            
         }
         
-class SaleForm(ModelForm):
+class SaleForm(forms.Form):
 
-    class Meta:
-        model = Sale
-        exclude = settings.EXCLUDE_FORM_FIELDS + ("status", "discount")
-        widgets = {
-            'product': TextInput(attrs={'class':'form-control', 'readonly':True, 'style':'background-color:white;border:none'}),
-        }
+    product_id62 = CharField(
+        required = False
+    )
+    product_id62.widget = TextInput(attrs={'class':'form-control', 'style':'visibility:hidden;height:0px;padding:0px', })
+
+    product = CharField(
+        required = False
+    )
+    product.widget = TextInput(attrs={'class':'form-control', 'readonly':True, 'style':'background-color:white;border:none'})
+
+    price = CharField(
+        required = False
+    )
+    price.widget = TextInput(attrs={'class':'form-control', 'readonly':True, 'style':'background-color:white;border:none'})
+
+    discount = CharField(
+        required = False
+    )
+    discount.widget = TextInput(attrs={'class':'form-control', 'readonly':True, 'style':'background-color:white;border:none'})
+
+    discount_price = CharField(
+        required = False
+    )
+    discount_price.widget = TextInput(attrs={'class':'form-control', 'readonly':True, 'style':'background-color:white;border:none'})
+
+    quantity = DecimalField(
+        required = True
+    )
+    quantity.widget = NumberInput(attrs={'class':'form-control form-quantity', 'min':1, 'readonly':True, 'style':'background-color:white;border:none'})
+
+    total_price = CharField(
+        required = False
+    )
+    total_price.widget = TextInput(attrs={'class':'form-control form-total_price', 'readonly':True, 'style':'background-color:white;border:none'})
+    
+
+class InvestorForm(forms.Form):
+
+    investor = ModelChoiceField(
+        queryset = Investor.objects.filter(
+            deleted_at__isnull = True,
+        ),
+        required=False
+    )
+    investor.widget = Select(attrs={'class':'form-control select2'})
+    
+            

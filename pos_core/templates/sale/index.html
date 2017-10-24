@@ -10,7 +10,7 @@
                 <div class="box-header with-border">
                   <h3 class="box-title">Sale</h3>
                 </div>
-                <form role="form" method="POST">
+                <form id="form" role="form" method="POST">
                     <!-- /.box-header -->
                     <div class="box-body">
                         {% csrf_token %}
@@ -24,10 +24,151 @@
                             </div>
                         </div>
 
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-group required">
+                                    <label>{{form.sale.0.product.label}}</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group required">
+                                    <label>{{form.sale.0.price.label}}</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group required">
+                                    <label>{{form.sale.0.quantity.label}}</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-1">
+                                <div class="form-group required">
+                                    <label>{{form.sale.0.discount.label}}</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group required">
+                                    <label>{{form.sale.0.discount_price.label}}</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group required">
+                                    <label>{{form.sale.0.total_price.label}}</label>
+                                </div>
+                            </div>
+                        </div>
+                        {{form.sale.management_form}}
+                        {% for s in form.sale %}
+                        <div class="row sale-formset">
+                            {{s.product_id62}}
+                            <div class="form-container"></div>
+                                <div class="col-sm-3">
+                                    <div class="form-group required">
+                                        <div class="col-md-10">
+                                            {{s.product}}
+                                        </div>
+                                        <div class="col-md-2 item-remover"></div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group required">
+                                        {{s.price}}
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group required">
+                                        {{s.quantity}}
+                                    </div>
+                                </div>
+                                <div class="col-sm-1">
+                                    <div class="form-group required">
+                                        {{s.discount}}
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group required">
+                                        {{s.discount_price}}
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group required">
+                                        {{s.total_price}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <div class="form-group required">
+                                   
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group required pull-right">
+                                    <label>Total</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group required">
+                                    <label>Rp.<span id="total">0</span></label>
+                                </div>
+                            </div>
+                        </div>
                     <div class="box-footer">
-                        <button type="button" class="btn btn-primary">Checkout</button>
-                        <button type="button" class="btn btn-info">Hold</button>
-                        <button type="button" class="btn btn-warning">Cancel</button>
+                        <button type="button" onclick="form_submit('checkout')" class="btn btn-primary">Checkout</button>
+                        <button type="button" onclick="form_submit('hold')" class="btn btn-info">Hold</button>
+                        <button type="button" onclick="form_submit('cancel')" class="btn btn-warning">Cancel</button>
+                    </div>
+                    <input id="form-parameter" type="hidden" name="parameter" value="none">
+
+                    <!-- Modal -->
+                    <div id="checkout-modal" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Modal Header</h4>
+                        </div>
+                        <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group required">
+                                            <label>{{form.buyer.investor.label}}</label>
+                                            {{form.buyer.investor}}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-group required">
+                                            <label>Total</label>
+                                            <h2 id="modal-price-html" style="margin-top:0px"></h2>
+                                            <input type="hidden" id="modal-price" name="price" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-group required">
+                                            <label>Paid</label>
+                                            <input type="number" id="modal-paid" name="paid" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-group required">
+                                            <label>Return :</label>
+                                            <h2 id="modal-return" style="margin-top:0px"></h2>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn btn-primary" data-dismiss="modal" onclick="document.getElementById('form').submit()">Checkout</button>
+                        </div>
+                        </div>
+
+                    </div>
                     </div>
                 </form>
             </div>
@@ -88,11 +229,104 @@
     
     $(".select2").select2();
 
+    $(".form-quantity").keyup(function(){
+        var price = parseInt($("#id_sale-"+$(this).attr("data-index")+"-discount_price").val().replace(",", "").replace(".", ""))
+        if(!price){
+            price = parseInt($("#id_sale-"+$(this).attr("data-index")+"-price").val().replace(",", "").replace(".", ""))
+        }
+        $("#id_sale-"+$(this).attr("data-index")+"-total_price").val((price * parseInt($(this).val())).toLocaleString())
+        count_total()
+    })
+
     $("#{{form.stock.product.auto_id}}").change(function(){
         $.get("{% url 'core:sale-ajax' %}", {'product_id': $(this).val()}, function(data){
-            console.log(data)
+            var index = ($('#id_sale-TOTAL_FORMS').val()-1)
+            $("#id_sale-"+index+"-product").val(data.data.name)
+            $("#id_sale-"+index+"-product_id62").val(data.data.id62)
+            $("#id_sale-"+index+"-price").val(data.data.price.toLocaleString())
+            $("#id_sale-"+index+"-quantity").val(1)
+            $("#id_sale-"+index+"-quantity").attr({"data-index":($('#id_sale-TOTAL_FORMS').val()-1), "style":"", "readonly":false})
+            $("#id_sale-"+index+"-discount").val(data.data.discount.toLocaleString())
+            $("#id_sale-"+index+"-discount_price").val(data.data.discount_price.toLocaleString())
+            $("#id_sale-"+index+"-total_price").val(data.data.int_discount_price.toLocaleString())
+
+            cloneMore('div.sale-formset:last');
+
+            var i = 0
+            $(".item-remover").each(function(){
+                if(i==index){
+                    $(this).html("<a href='javascript:void(0)' onclick=remove_element("+index+")>x</a>")
+                }
+                i++
+            })
+
         })
     })
+
+    $("#modal-paid").keyup(function(){
+        var price_item = parseInt($("#modal-price").val().replace(",", "").replace(".", "").replace("Rp ", ""))
+        console.log($("#modal-price").val().replace(",", "").replace(".", "").replace("Rp. ", ""))
+        $("#modal-return").html("Rp. " + ($(this).val() - price_item).toLocaleString())
+        
+    })
+
+    function form_submit(par){
+        $("#form-parameter").val(par)
+        if(par!="checkout"){
+            $("#form").submit()
+        }else{
+            $("#checkout-modal").modal("toggle")
+        }
+    }
+
+    function remove_element(id){
+        $(".sale-formset").each(function(){
+            var form_container = $(this).children()
+            $(this).find(':input').each(function(index){
+                if (index == 0 && $(this).attr('id').split("-")[1] == id) {
+                    form_container.remove()
+                    count_total()
+                }
+            })
+        })
+    }
+
+    function count_total(){
+        var price_item = 0
+        $(".form-total_price").each(function(){
+            var this_price_item = parseInt($(this).val().replace(",", "").replace(".", ""))
+            if(this_price_item){
+                price_item += this_price_item
+            }
+            $("#total").html(price_item.toLocaleString())
+            $("#modal-price").val(price_item)
+            $("#modal-price-html").html("Rp. " + price_item.toLocaleString())
+        })
+    }
+
+    function cloneMore(selector) {
+            var newElement = $(selector).clone(true);
+            var total = $('#id_sale-TOTAL_FORMS').val();
+            newElement.find(':input').each(function() {
+                if ($(this).attr('name') != undefined) {
+                    var name = $(this).attr('name').replace('-' + (total-1) + '-','-' + total + '-');
+                    var id = 'id_' + name;
+                    $(this).attr({'name': name, 'id': id})
+                    if($(this).attr('type') != "hidden"){
+                        $(this).val('');
+                    }
+                    if($(this).attr("class").indexOf('form-quantity')>0){
+                        $(this).attr({"style":"background-color:white;border:none", "readonly":true})
+                    }
+                }
+            });
+            
+            total++;
+            $('#id_sale-TOTAL_FORMS').val(total);
+            $(selector).after(newElement);
+            count_total()
+        }
+    </script>
 </script>
 
 {% endblock %}
