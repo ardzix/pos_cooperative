@@ -7,7 +7,7 @@ from libs.views import ProtectedMixin
 from libs.storages import generate_name, STORAGE_BACKGROUND_COVER, STORAGE_AVATAR
 from django.contrib.auth.models import User
 from django.utils import timezone
-from core.libs.moment import to_timestamp
+from libs.moment import to_timestamp
 
 # Create your models here.
 class Role(BaseModelGeneric):
