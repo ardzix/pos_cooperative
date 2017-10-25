@@ -3,7 +3,7 @@ from libs.views import ProtectedMixin
 from pos_core.models import Investor
 from libs.datatable import Datatable
 from libs.json_response import JSONResponse
-from pos_core.forms import InvestorForm
+from pos_core.forms import MasterInvestorForm
 from django.contrib import messages
 from django.shortcuts import redirect, reverse
 from django.contrib.auth.models import User
@@ -43,9 +43,9 @@ class InvestorFormView(ProtectedMixin, TemplateView):
         edit = request.GET.get("edit")
 
         if edit:
-            form = InvestorForm(instance=Investor.objects.get(id62=edit))
+            form = MasterInvestorForm(instance=Investor.objects.get(id62=edit))
         else:
-            form = InvestorForm()
+            form = MasterInvestorForm()
 
         return self.render_to_response({"form":form})
 

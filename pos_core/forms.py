@@ -49,7 +49,7 @@ class ProfileForm(ModelForm):
         }
 
 
-class InvestorForm(ModelForm):
+class MasterInvestorForm(ModelForm):
     already_added = []
 
     for v in Investor.objects.filter(deleted_at__isnull = True).all():
