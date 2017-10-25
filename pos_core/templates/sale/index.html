@@ -164,7 +164,8 @@
                                 </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn btn-primary" data-dismiss="modal" onclick="document.getElementById('form').submit()">Checkout</button>
+                            <!-- <button type="submit" class="btn btn btn-primary" data-dismiss="modal" onclick="document.getElementById('form').submit()">Checkout</button> -->
+                            <button type="submit" class="btn btn btn-primary" data-dismiss="modal" onclick="alert('Sorry, this function is not yet available')">Checkout</button>
                         </div>
                         </div>
 
@@ -273,7 +274,8 @@
     function form_submit(par){
         $("#form-parameter").val(par)
         if(par!="checkout"){
-            $("#form").submit()
+            // $("#form").submit()
+            alert('Sorry, this function is not yet available')
         }else{
             $("#checkout-modal").modal("toggle")
         }

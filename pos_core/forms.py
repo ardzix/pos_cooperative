@@ -52,8 +52,8 @@ class ProfileForm(ModelForm):
 class InvestorForm(ModelForm):
     already_added = []
 
-    # for v in Investor.objects.filter(deleted_at__isnull = True).all():
-    #     already_added.append(v.created_by.id)
+    for v in Investor.objects.filter(deleted_at__isnull = True).all():
+        already_added.append(v.created_by.id)
 
     user = ModelChoiceField (
         queryset = User.objects.exclude(
