@@ -4,6 +4,9 @@ from pos_core.models import Investor
 from libs.datatable import Datatable
 from libs.json_response import JSONResponse
 from pos_core.forms import MasterInvestorForm
+
+
+
 from django.contrib import messages
 from django.shortcuts import redirect, reverse
 from django.contrib.auth.models import User
@@ -53,9 +56,9 @@ class InvestorFormView(ProtectedMixin, TemplateView):
         edit = request.GET.get("edit")
 
         if edit:
-            form = InvestorForm(request.POST, instance=Investor.objects.get(id62=edit))
+            form = MasterInvestorForm(request.POST, instance=Investor.objects.get(id62=edit))
         else:
-            form = InvestorForm(request.POST)
+            form = MasterInvestorForm(request.POST)
 
         if form.is_valid():
             user = User.objects.filter(id=request.POST.get("user")).first()
