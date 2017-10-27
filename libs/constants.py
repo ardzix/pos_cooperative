@@ -22,3 +22,7 @@ SALE_STATUSES = (
     (3, 'Ditahan'),
     (4, 'Selesai'),
 )
+INVENTORY_METHOD = (
+    (1, 'FIFO'),
+    (2, 'LIFO'),
+)

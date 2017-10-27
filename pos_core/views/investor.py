@@ -76,7 +76,7 @@ class InvestorFormView(ProtectedMixin, TemplateView):
             messages.success(request, 'Investor (%s) has been saved.' % investor.created_by)
 
             return redirect(
-                reverse("core:investor")
+                 reverse("core:investor")
             )
         else:
             print form.errors

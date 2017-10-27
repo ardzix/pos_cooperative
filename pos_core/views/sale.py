@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView
 from libs.views import ProtectedMixin
 from pos_core.models import Role, Product, Discount, DiscountProduct, Sale, Checkout, Investor
-from pos_core.forms import StockForm, SaleForm, InvestorForm
+from pos_core.forms import ProductOnstockForm, SaleForm, InvestorForm
 from libs.json_response import JSONResponse
 from django.contrib import messages
 from django.shortcuts import redirect, reverse
@@ -20,7 +20,7 @@ class SaleView(ProtectedMixin, TemplateView):
 
         return self.render_to_response({
             'form' : {
-                'stock' : StockForm(prefix="product"),
+                'stock' : ProductOnstockForm(prefix="product"),
                 'sale' : SaleFormSet(prefix="sale"),
                 'buyer' : InvestorForm()
             }
@@ -55,14 +55,34 @@ class SaleView(ProtectedMixin, TemplateView):
                     sale_by = request.user,
                 )
                 checkout.save()
+            else:
                 is_checkout = False
                 parameter = "hold"
 
         for s in sale_form:
-            if s.is_valid():
-                print s.cleaned_data
+            if s.is_valid() and len(s.cleaned_data)>0:
+                product = Product.objects.filter(id62=s.cleaned_data['product_id62']).first()
+                item_sale = Sale(
+                    product = product,
+                    discount = DiscountProduct.objects.filter(product=product).first().discount,
+                    amount = int(s.cleaned_data['quantity']) * int(s.cleaned_data['price'].replace(",","").replace(".","")),
+                    created_by = request.user,
+                )
+                if is_checkout:
+                    item_sale.status = 4
+                    item_sale.checkout = checkout
+                    product.sale(int(s.cleaned_data['quantity']))
+                if parameter == "cancel":
+                    item_sale.status = 2
+                if parameter == "hold":
+                    item_sale.status = 3
+                item_sale.save()
             else:
                 print s.errors
+
+        return redirect(
+            reverse("core:sale")
+        )
 
         
 

@@ -16,16 +16,22 @@
                         {% csrf_token %}
 
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label>{{form.category.label}}</label>
                                     {{form.category}}
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label>{{form.brand.label}}</label>
                                     {{form.brand}}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>{{form.method.label}}</label>
+                                    {{form.method}}
                                 </div>
                             </div>
                         </div>

@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from libs.constants import PRODUCT_CATEGORIES, GENDER_CHOICES, INVESTOR_TYPE_CHOICES, DISCOUNT_TYPES, SALE_STATUSES
+from libs.constants import PRODUCT_CATEGORIES, GENDER_CHOICES, INVESTOR_TYPE_CHOICES, DISCOUNT_TYPES, SALE_STATUSES, INVENTORY_METHOD
 from libs.models import BaseModelGeneric, BaseModelUnique
 from libs.views import ProtectedMixin
 from libs.storages import generate_name, STORAGE_BACKGROUND_COVER, STORAGE_AVATAR
@@ -84,6 +84,7 @@ class Product(BaseModelGeneric):
     base_price = models.DecimalField(max_digits=20, decimal_places=2)
     is_available = models.BooleanField(default=True)
     description = models.TextField(blank=True, null=True)
+    method = models.PositiveIntegerField(choices=INVENTORY_METHOD, default=1)    
 
     def __unicode__(self):
         return "[%s][%s] %s" % (self.sku, self.brand, self.display_name)
@@ -112,6 +113,25 @@ class Product(BaseModelGeneric):
             return d.discount
         else:
             return None
+    
+    def sale(self, qty):
+        if self.method == 1:
+            stocks = Stock.objects.filter(product=self, latest_stock__gt=0, deleted_at__isnull = True).order_by("created_at").all()
+        else:
+            stocks = Stock.objects.filter(product=self, latest_stock__gt=0, deleted_at__isnull = True).order_by("-created_at").all()
+        print self.method
+        print stocks.values_list("latest_stock")
+        print stocks.values_list("created_at")
+        for s in stocks:
+            if qty <= s.latest_stock:
+                s.latest_stock -= qty
+                s.save()
+                break
+            else:
+                qty -= s.latest_stock
+                s.latest_stock = 0
+                s.save()
+        
 
     class Meta:
         verbose_name = "Product"
@@ -192,8 +212,6 @@ class Sale(BaseModelGeneric):
     discount = models.ForeignKey(Discount, related_name="%(app_label)s_%(class)s_discount", blank=True, null=True)
     amount = models.PositiveIntegerField(default=0)
     status = models.PositiveIntegerField(choices=SALE_STATUSES, default=1)
-
-    # Please not that created_by is filled with buyer info
 
     class Meta:
         verbose_name = "Sale"

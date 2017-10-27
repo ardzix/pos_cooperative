@@ -86,6 +86,7 @@ class ProductForm(ModelForm):
         exclude = settings.EXCLUDE_FORM_FIELDS
         widgets = {
             'category': Select(attrs={'class':'form-control select2'}),
+            'method': Select(attrs={'class':'form-control select2'}),
             'brand': Select(attrs={'class':'form-control select2'}),
             'sku': TextInput(attrs={'class':'form-control'}),
             'display_name': TextInput(attrs={'class':'form-control'}),
@@ -177,7 +178,6 @@ class SaleForm(forms.Form):
     
 
 class InvestorForm(forms.Form):
-
     investor = ModelChoiceField(
         queryset = Investor.objects.filter(
             deleted_at__isnull = True,
@@ -185,5 +185,14 @@ class InvestorForm(forms.Form):
         required=False
     )
     investor.widget = Select(attrs={'class':'form-control select2'})
-    
-            
+
+class ProductOnstockForm(forms.Form):
+    in_stock = Stock.objects.filter(latest_stock__gt=0, deleted_at__isnull=True).order_by('product_id').distinct('product_id').values_list('product_id', flat=True)
+    product = ModelChoiceField(
+        queryset = Product.objects.filter(
+            deleted_at__isnull = True,
+            id__in = in_stock
+        ),
+        required=False
+    )
+    product.widget = Select(attrs={'class':'form-control select2'})
