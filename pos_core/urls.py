@@ -7,6 +7,7 @@ from pos_core.views.product import *
 from pos_core.views.stock import *
 from pos_core.views.discount import *
 from pos_core.views.sale import *
+from pos_core.views.report import *
 
 urlpatterns = [
     url(r'^role/$', RoleView.as_view(), name='role'),
@@ -35,5 +36,6 @@ urlpatterns = [
     url(r'^sale/$', SaleView.as_view(), name='sale'),
     url(r'^sale/ajax/$', SaleAjaxView.as_view(), name='sale-ajax'),
 
+    url(r'^report/$', ReportView.as_view(), name='report'),
     
 ]
