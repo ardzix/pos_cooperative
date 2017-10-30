@@ -29,23 +29,31 @@ class SaleView(ProtectedMixin, TemplateView):
     def post(self, request):
         sale_form = SaleFormSet(request.POST, prefix="sale")
 
+        # ======================================
+        # Get investor who buy this checkout
+        # ======================================
+        investor_id = request.POST.get('investor','')
+        if investor_id == "":
+            investor_id = 0
+        investor = Investor.objects.filter(id=investor_id).first()
+        if investor:
+            buyer = investor.created_by
+        # if buyer is not an investor, set buyer to id 0
+        else:
+            buyer = User.objects.filter(id=0).first()
+            if not buyer:
+                buyer = User(id=0, username="None", email="none@pos.io", first_name="None")
+                buyer.save()
+        # ======================================
+
         is_checkout = False
         parameter = request.POST.get("parameter")
+
+        # ======================================
+        # If checkhout finished, we add all the item in cart to checkout table
+        # ======================================
         if parameter == "checkout":
             is_checkout = True
-
-            investor_id = request.POST.get('investor','')
-            if investor_id == "":
-                investor_id = 0
-
-            investor = Investor.objects.filter(id=investor_id).first()
-            if investor:
-                buyer = investor.created_by
-            else:
-                buyer = User.objects.filter(id=0).first()
-                if not buyer:
-                    buyer = User(id=0, username="None", email="none@pos.io", first_name="None")
-                    buyer.save()
 
             if request.POST.get("price") != "" and request.POST.get("paid") != "":
                 checkout = Checkout(
@@ -58,16 +66,22 @@ class SaleView(ProtectedMixin, TemplateView):
             else:
                 is_checkout = False
                 parameter = "hold"
+        # ======================================
 
+        # ======================================
+        # For every item in sale form, we add it into table
+        # ======================================
         for s in sale_form:
             if s.is_valid() and len(s.cleaned_data)>0:
                 product = Product.objects.filter(id62=s.cleaned_data['product_id62']).first()
                 item_sale = Sale(
                     product = product,
-                    discount = DiscountProduct.objects.filter(product=product).first().discount,
                     amount = int(s.cleaned_data['quantity']) * int(s.cleaned_data['price'].replace(",","").replace(".","")),
-                    created_by = request.user,
+                    created_by = buyer,
+                    sale_by = request.user,
                 )
+                if product.applied_discount():
+                    item_sale = product.applied_discount()
                 if is_checkout:
                     item_sale.status = 4
                     item_sale.checkout = checkout
@@ -79,6 +93,7 @@ class SaleView(ProtectedMixin, TemplateView):
                 item_sale.save()
             else:
                 print s.errors
+        # ======================================
 
         return redirect(
             reverse("core:sale")

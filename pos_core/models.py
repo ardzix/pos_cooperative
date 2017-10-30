@@ -8,6 +8,7 @@ from libs.storages import generate_name, STORAGE_BACKGROUND_COVER, STORAGE_AVATA
 from django.contrib.auth.models import User
 from django.utils import timezone
 from libs.moment import to_timestamp
+from datetime import datetime
 
 # Create your models here.
 class Role(BaseModelGeneric):
@@ -108,7 +109,7 @@ class Product(BaseModelGeneric):
             return float(self.base_price)
 
     def applied_discount(self):
-        d = DiscountProduct.objects.filter(product=self).last()
+        d = DiscountProduct.objects.filter(product=self, discount__deleted_at__isnull = True, discount__start_date_at__lte=datetime.now(), discount__end_date_at__gte=datetime.now()).last()
         if d:
             return d.discount
         else:
@@ -212,6 +213,21 @@ class Sale(BaseModelGeneric):
     discount = models.ForeignKey(Discount, related_name="%(app_label)s_%(class)s_discount", blank=True, null=True)
     amount = models.PositiveIntegerField(default=0)
     status = models.PositiveIntegerField(choices=SALE_STATUSES, default=1)
+    sale_at = models.DateTimeField()
+    sale_at_timestamp = models.PositiveIntegerField(db_index=True)
+    sale_by = models.ForeignKey(User, db_index=True, related_name="%(app_label)s_%(class)s_sale_by")
+
+    # Please not that created_by is filled with buyer info, and sale_by si filled by sales/admin
+
+    def save(self, *args, **kwargs):
+        now = timezone.now()
+
+        if self.sale_at is None:
+            self.sale_at = now
+            self.sale_at_timestamp = to_timestamp(self.sale_at)
+
+        instance = super(Sale, self).save(*args, **kwargs)
+        return instance
 
     class Meta:
         verbose_name = "Sale"
