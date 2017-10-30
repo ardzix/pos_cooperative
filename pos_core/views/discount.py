@@ -112,10 +112,11 @@ class DiscountProductFormView(ProtectedMixin, TemplateView):
             product = []
             for dp in dp_obj:
                 product.append(dp.product.id)
-            print product
             form = DiscountProductForm(instance=dp_obj.first(), initial = {'product' : product})
         else:
             form = DiscountProductForm()
+
+        form.fields['discount'].queryset = form.fields['discount'].queryset.filter(deleted_at__isnull=True)
 
         return self.render_to_response({"form":form})
 

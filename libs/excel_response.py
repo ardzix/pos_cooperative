@@ -10,12 +10,9 @@ class XLSXResponse(TemplateView):
       wb = xlwt.Workbook(encoding='utf-8')
       ws = wb.add_sheet("data")
 
-      for j,c in enumerate(generator['headers']):
-              ws.write(0,j,c)
-
-      for i,row in enumerate(generator):
-          for j,c in enumerate(row):
-              ws.write(i+1,j,c)
+      for i,row in enumerate(generator['data']):
+          for j,column in enumerate(row):
+              ws.write(i,j,column)
 
       wb.save(response)
       return response

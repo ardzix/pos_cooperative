@@ -196,3 +196,15 @@ class ProductOnstockForm(forms.Form):
         required=False
     )
     product.widget = Select(attrs={'class':'form-control select2'})
+
+class ReportForm(forms.Form):
+    
+    start_date = CharField(
+        required = False
+    )
+    start_date.widget = DateTimeInput(attrs={'class':'form-control'})
+
+    end_date = CharField(
+        required = False
+    )
+    end_date.widget = DateTimeInput(attrs={'class':'form-control'})

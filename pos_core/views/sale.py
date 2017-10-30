@@ -77,6 +77,8 @@ class SaleView(ProtectedMixin, TemplateView):
                 item_sale = Sale(
                     product = product,
                     amount = int(s.cleaned_data['quantity']) * int(s.cleaned_data['price'].replace(",","").replace(".","")),
+                    qty = int(s.cleaned_data['quantity']),
+                    price = int(s.cleaned_data['price'].replace(",","").replace(".","")),
                     created_by = buyer,
                     sale_by = request.user,
                 )

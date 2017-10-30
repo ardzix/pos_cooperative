@@ -184,7 +184,6 @@ class DiscountProduct(BaseModelGeneric):
 
 class Checkout(BaseModelGeneric):
     price = models.PositiveIntegerField(default=0)
-    discount = models.PositiveIntegerField(default=0)
     paid = models.PositiveIntegerField(default=0)
     sale_at = models.DateTimeField()
     sale_at_timestamp = models.PositiveIntegerField(db_index=True)
@@ -212,6 +211,8 @@ class Sale(BaseModelGeneric):
     product = models.ForeignKey(Product, related_name="%(app_label)s_%(class)s_product")
     discount = models.ForeignKey(Discount, related_name="%(app_label)s_%(class)s_discount", blank=True, null=True)
     amount = models.PositiveIntegerField(default=0)
+    qty = models.PositiveIntegerField(default=0)
+    price = models.PositiveIntegerField(default=0)
     status = models.PositiveIntegerField(choices=SALE_STATUSES, default=1)
     sale_at = models.DateTimeField()
     sale_at_timestamp = models.PositiveIntegerField(db_index=True)

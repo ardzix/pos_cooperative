@@ -37,5 +37,6 @@ urlpatterns = [
     url(r'^sale/ajax/$', SaleAjaxView.as_view(), name='sale-ajax'),
 
     url(r'^report/$', ReportView.as_view(), name='report'),
+    url(r'^report/download/$', ReportXLSView.as_view(), name='report-download'),
     
 ]
