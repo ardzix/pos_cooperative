@@ -52,13 +52,19 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>{{form.capital.label}}</label>
+                                    {{form.capital}}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label>{{form.base_price.label}}</label>
                                     {{form.base_price}}
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label>{{form.sku.label}}</label>
                                     {{form.sku}}
@@ -157,6 +163,10 @@
     // Script to automatically fill slug form with the same value from name form
         $( "#id_display_name" ).keyup(function() {
             $("#id_short_name").val(convertToSlug($("#id_display_name").val()))
+        });
+
+        $( "#id_capital" ).keyup(function() {
+            $("#id_base_price").val( parseInt($( "#id_capital" ).val()) + parseInt($( "#id_capital" ).val()*0.2))
         });
     
         function convertToSlug(Text)

@@ -93,9 +93,14 @@ class ProductForm(ModelForm):
             'short_name': TextInput(attrs={'class':'form-control'}),
             'base_price': NumberInput(attrs={'class':'form-control'}),
             'is_available': CheckboxInput(attrs={'checked':'checked'}),
+            'capital': NumberInput(attrs={'class':'form-control'}),
         }
         labels =  {
-            'sku' : "SKU/Barcode"
+            'sku' : "SKU/Barcode",
+            'base_price' : "Harga Jual",
+            'capital' : "Modal",
+            'method' : "Metode Gudang",
+            'category' : "Kategori",
         }
 
 class StockForm(ModelForm):
