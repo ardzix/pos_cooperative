@@ -76,23 +76,26 @@ class SaleView(ProtectedMixin, TemplateView):
                 product = Product.objects.filter(id62=s.cleaned_data['product_id62']).first()
                 item_sale = Sale(
                     product = product,
-                    amount = int(s.cleaned_data['quantity']) * int(s.cleaned_data['price'].replace(",","").replace(".","")),
+                    amount = int(s.cleaned_data['quantity']) * int(s.cleaned_data['price'].replace(",","")),
                     qty = int(s.cleaned_data['quantity']),
-                    price = int(s.cleaned_data['price'].replace(",","").replace(".","")),
+                    price = int(s.cleaned_data['price'].replace(",","")),
                     created_by = buyer,
                     sale_by = request.user,
                 )
                 if product.applied_discount():
-                    item_sale = product.applied_discount()
+                    item_sale.discount = product.applied_discount()
                 if is_checkout:
                     item_sale.status = 4
                     item_sale.checkout = checkout
+                    item_sale.save()
+                    item_sale.sold(request.user, buyer)                    
                     product.sale(int(s.cleaned_data['quantity']))
-                if parameter == "cancel":
-                    item_sale.status = 2
-                if parameter == "hold":
-                    item_sale.status = 3
-                item_sale.save()
+                else:
+                    if parameter == "cancel":
+                        item_sale.status = 2
+                    if parameter == "hold":
+                        item_sale.status = 3
+                    item_sale.save()
             else:
                 print s.errors
         # ======================================
@@ -108,7 +111,6 @@ class SaleAjaxView(ProtectedMixin, TemplateView):
 
     def get(self, request):
         p = Product.objects.filter(id=request.GET.get("product_id")).first()
-
         if not p:
             return JSONResponse({
                     'success' : False,

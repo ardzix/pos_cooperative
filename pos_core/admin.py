@@ -10,3 +10,10 @@ class UserRoleAdmin(admin.ModelAdmin):
         model = Role
 
 admin.site.register(Role, UserRoleAdmin)    
+
+class ProfileAdmin(admin.ModelAdmin):
+
+    class Meta:
+        model = Profile
+
+admin.site.register(Profile, ProfileAdmin)    

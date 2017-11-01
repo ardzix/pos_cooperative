@@ -1,11 +1,12 @@
 from django.views.generic import TemplateView
 from libs.views import ProtectedMixin
-from pos_core.models import Stock
+from pos_core.models import Stock, Product
 from libs.datatable import Datatable
 from libs.json_response import JSONResponse
 from pos_core.forms import StockForm
 from django.contrib import messages
 from django.shortcuts import redirect, reverse
+from django.db.models import  Q
 
 class StockView(ProtectedMixin, TemplateView):
     template_name = "stock/index.html"
@@ -32,8 +33,38 @@ class StockView(ProtectedMixin, TemplateView):
 
         defer = ['id62', 'product', 'latest_stock', 'created_at']
 
-        d = Datatable(request, qs, defer)
+        d = StockDatatable(request, qs, defer)
         return d.get_data()
+
+class StockDatatable(Datatable):
+
+    def search(self,filter_qry):
+        search_defer = []
+        u_id = []
+
+        for n in range(len(self.defer)):
+            if n == 1:
+                p = Product.objects.filter(Q(display_name__icontains=filter_qry) | Q(sku__icontains=filter_qry)).all()
+                for v in p:
+                    u_id.append(v.id)
+            else:
+                if self.request.GET.get('columns['+str(n)+'][searchable]','false') == 'true':
+                    search_defer.append(self.defer[n]+"__icontains")
+
+        queries = [Q(**{f: filter_qry}) for f in search_defer]
+        queries.append(Q(**{"product__in": u_id}))
+
+        qs = Q()
+        for query in queries:
+            qs = qs | query
+
+        try:
+            self.posts = self.obj.filter(qs)
+            self.data['recordsFiltered'] = self.obj.filter(qs).count()
+        except Exception as e:
+            return JSONResponse({'error' : 'error in search parameter', 'error detail': str(e), 'suggestion' : 'Only enable varchar data type only for search'})
+  
+
 
 
 class StockFormView(ProtectedMixin, TemplateView):

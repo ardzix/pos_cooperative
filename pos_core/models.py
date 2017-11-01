@@ -120,9 +120,7 @@ class Product(BaseModelGeneric):
             stocks = Stock.objects.filter(product=self, latest_stock__gt=0, deleted_at__isnull = True).order_by("created_at").all()
         else:
             stocks = Stock.objects.filter(product=self, latest_stock__gt=0, deleted_at__isnull = True).order_by("-created_at").all()
-        print self.method
-        print stocks.values_list("latest_stock")
-        print stocks.values_list("created_at")
+
         for s in stocks:
             if qty <= s.latest_stock:
                 s.latest_stock -= qty
@@ -188,6 +186,9 @@ class Checkout(BaseModelGeneric):
     sale_at = models.DateTimeField()
     sale_at_timestamp = models.PositiveIntegerField(db_index=True)
     sale_by = models.ForeignKey(User, db_index=True, related_name="%(app_label)s_%(class)s_sale_by")
+    closed_at = models.DateTimeField(blank=True, null=True)
+    closed_at_timestamp = models.PositiveIntegerField(db_index=True, blank=True, null=True)
+    closed_by = models.ForeignKey(User, db_index=True, blank=True, null=True, related_name="%(app_label)s_%(class)s_close_by")
 
     # Please not that created_by is filled with buyer info, and sale_by si filled by sales/admin
 
@@ -213,10 +214,14 @@ class Sale(BaseModelGeneric):
     amount = models.PositiveIntegerField(default=0)
     qty = models.PositiveIntegerField(default=0)
     price = models.PositiveIntegerField(default=0)
+    discounted_price = models.PositiveIntegerField(default=0)
     status = models.PositiveIntegerField(choices=SALE_STATUSES, default=1)
     sale_at = models.DateTimeField()
     sale_at_timestamp = models.PositiveIntegerField(db_index=True)
     sale_by = models.ForeignKey(User, db_index=True, related_name="%(app_label)s_%(class)s_sale_by")
+    closed_at = models.DateTimeField(blank=True, null=True)
+    closed_at_timestamp = models.PositiveIntegerField(db_index=True, blank=True, null=True)
+    closed_by = models.ForeignKey(User, db_index=True, blank=True, null=True, related_name="%(app_label)s_%(class)s_close_by")
 
     # Please not that created_by is filled with buyer info, and sale_by si filled by sales/admin
 
@@ -227,9 +232,33 @@ class Sale(BaseModelGeneric):
             self.sale_at = now
             self.sale_at_timestamp = to_timestamp(self.sale_at)
 
-        instance = super(Sale, self).save(*args, **kwargs)
-        return instance
+        if self.discount:
+            self.discounted_price = self.price - ((self.price * self.discount.reduction) / 100)
+        else:
+            self.discounted_price = self.price
+
+        return super(Sale, self).save(*args, **kwargs)
+
+    def sold(self, staff, buyer):
+        if buyer.id > 0 and self.product.category == 1:
+            amount = self.discounted_price * 0.05
+            cb = CashBack(sale=self, investor=buyer, amount=amount)
+            cb.created_by = staff
+            cb.save()
+
 
     class Meta:
         verbose_name = "Sale"
         verbose_name_plural = "Sales"
+
+class CashBack(BaseModelGeneric):
+    sale = models.ForeignKey(Sale, related_name="%(app_label)s_%(class)s_sale")
+    investor = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_investor")
+    amount = models.PositiveIntegerField(default=0)
+    closed_at = models.DateTimeField(blank=True, null=True)
+    closed_at_timestamp = models.PositiveIntegerField(db_index=True, blank=True, null=True)
+    closed_by = models.ForeignKey(User, db_index=True, blank=True, null=True, related_name="%(app_label)s_%(class)s_close_by")
+    
+    class Meta:
+        verbose_name = "Cashback"
+        verbose_name_plural = "Cashbacks"

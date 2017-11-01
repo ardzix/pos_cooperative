@@ -230,9 +230,9 @@
     $(".select2").select2();
 
     $(".form-quantity").keyup(function(){
-        var price = parseInt($("#id_sale-"+$(this).attr("data-index")+"-discount_price").val().replace(",", "").replace(".", ""))
+        var price = parseInt($("#id_sale-"+$(this).attr("data-index")+"-discount_price").val().replace(",", ""))
         if(!price){
-            price = parseInt($("#id_sale-"+$(this).attr("data-index")+"-price").val().replace(",", "").replace(".", ""))
+            price = parseInt($("#id_sale-"+$(this).attr("data-index")+"-price").val().replace(",", ""))
         }
         $("#id_sale-"+$(this).attr("data-index")+"-total_price").val((price * parseInt($(this).val())).toLocaleString())
         count_total()
@@ -264,8 +264,8 @@
     })
 
     $("#modal-paid").keyup(function(){
-        var price_item = parseInt($("#modal-price").val().replace(",", "").replace(".", "").replace("Rp ", ""))
-        console.log($("#modal-price").val().replace(",", "").replace(".", "").replace("Rp. ", ""))
+        var price_item = parseInt($("#modal-price").val().replace(",", "").replace("Rp ", ""))
+        console.log($("#modal-price").val().replace(",", "").replace("Rp. ", ""))
         $("#modal-return").html("Rp. " + ($(this).val() - price_item).toLocaleString())
         
     })
@@ -294,7 +294,7 @@
     function count_total(){
         var price_item = 0
         $(".form-total_price").each(function(){
-            var this_price_item = parseInt($(this).val().replace(",", "").replace(".", ""))
+            var this_price_item = parseInt($(this).val().replace(",", ""))
             if(this_price_item){
                 price_item += this_price_item
             }
