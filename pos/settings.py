@@ -149,3 +149,16 @@ EXCLUDE_FORM_FIELDS = (
     "unapproved_at", "unapproved_at_timestamp", "unapproved_by",
     "deleted_at", "deleted_at_timestamp", "deleted_by",
 )
+
+# Printer Settings
+PRINTER_CONF = {
+    "print_on" : True,
+    "usb_conf" : {
+        "vendor_id" : 0x0483,
+        "product_id" : 0x5720,
+        "timeout" : 0,
+        "input_endpoint" : 0x00,
+        "output_endpoint" : 0x02,
+    },
+    "cut_paper" : True,
+}

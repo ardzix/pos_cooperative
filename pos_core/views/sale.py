@@ -7,6 +7,10 @@ from django.contrib import messages
 from django.shortcuts import redirect, reverse
 from django.forms import formset_factory
 from django.contrib.auth.models import User
+from escpos.printer import Usb, Dummy
+from django.conf import settings
+import datetime
+
 
 SaleFormSet = formset_factory(
     SaleForm,
@@ -28,7 +32,7 @@ class SaleView(ProtectedMixin, TemplateView):
     
     def post(self, request):
         sale_form = SaleFormSet(request.POST, prefix="sale")
-
+            
         # ======================================
         # Get investor who buy this checkout
         # ======================================
@@ -71,6 +75,11 @@ class SaleView(ProtectedMixin, TemplateView):
         # ======================================
         # For every item in sale form, we add it into table
         # ======================================
+        item_sale_text = ""
+        item_sale_discount_text = ""
+        item_sale_amout = 0
+        item_sale_discount_amout = 0
+        item_sale_cashback_amout = 0
         for s in sale_form:
             if s.is_valid() and len(s.cleaned_data)>0:
                 product = Product.objects.filter(id62=s.cleaned_data['product_id62']).first()
@@ -88,8 +97,16 @@ class SaleView(ProtectedMixin, TemplateView):
                     item_sale.status = 4
                     item_sale.checkout = checkout
                     item_sale.save()
-                    item_sale.sold(request.user, buyer)                    
+                    cashback = item_sale.sold(request.user, buyer)                    
                     product.sale(int(s.cleaned_data['quantity']))
+
+                    item_sale_amout += item_sale.amount
+                    item_sale_text += "%s       x%d   %d\n" % (product.display_name, item_sale.qty, item_sale.amount)
+                    item_sale_cashback_amout += cashback
+                    if product.applied_discount():
+                        amount_discounted = item_sale.price - item_sale.discounted_price
+                        item_sale_discount_text += "%s       %d%%   %d\n" % (product.display_name, item_sale.discount.reduction, amount_discounted)                    
+                        item_sale_discount_amout += amount_discounted
                 else:
                     if parameter == "cancel":
                         item_sale.status = 2
@@ -99,6 +116,51 @@ class SaleView(ProtectedMixin, TemplateView):
             else:
                 print s.errors
         # ======================================
+
+        p_conf = settings.PRINTER_CONF        
+        if is_checkout and p_conf['print_on']:
+            usb_conf = p_conf['usb_conf']
+            printer = Usb(usb_conf['vendor_id'],usb_conf['product_id'],usb_conf['timeout'],usb_conf['input_endpoint'],usb_conf['output_endpoint'])
+
+            receipt = Dummy()
+            receipt.set(height=2, align='center', text_type="B")
+            receipt.text('Koperasi Warung Kita Untuk Kita\n')
+            receipt.set(align='center')
+            receipt.text('Tanggal: %s - Pukul: %s\n' % (datetime.datetime.now().strftime("%d-%m-%Y"), datetime.datetime.now().strftime("%H:%M")))
+            receipt.text('==============================================\n\n')
+            receipt.set(align='right')
+            receipt.text(item_sale_text)
+            receipt.text('============================\n')
+            receipt.text('Total :      Rp. %d\n\n' % item_sale_amout)
+            if item_sale_discount_amout > 0:
+                receipt.set(align='center')
+                receipt.text('Diskon\n')
+                receipt.set(align='right')
+                receipt.text(item_sale_discount_text)
+                receipt.text('============================\n')
+                receipt.text('Total Diskon:      Rp.%d\n\n' % item_sale_discount_amout)
+
+            receipt.set(text_type="B", align="right")
+            receipt.text('Total Harga :      Rp.%d\n' % item_sale_amout)
+            if item_sale_discount_amout > 0:
+                receipt.text('- Rp.%d\n' % item_sale_discount_amout)
+                receipt.text('(Rp.%d)\n' % (item_sale_amout-item_sale_discount_amout))
+            receipt.text('Bayar :      Rp.%s\n' % checkout.paid)
+            receipt.text('Kembalian :      Rp.%d\n\n\n' % (int(checkout.paid)-(item_sale_amout-item_sale_discount_amout)))
+
+            receipt.set(height=2, align='center', text_type="B")
+            if buyer.id > 0 :
+                receipt.text('%s %s\nTerimakasih Telah Berbelanja\n\n' % (buyer.first_name, buyer.last_name))
+                receipt.text('Anda Mendapatkan Cashback Sebesar Rp.%d' % item_sale_cashback_amout)                
+            else:
+                receipt.text('Terimakasih Telah Berbelanja')                
+
+            
+
+            if p_conf['cut_paper']:
+                receipt.cut()
+                
+            printer._raw(receipt.output)
 
         return redirect(
             reverse("core:sale")

@@ -241,12 +241,13 @@ class Sale(BaseModelGeneric):
         return super(Sale, self).save(*args, **kwargs)
 
     def sold(self, staff, buyer):
+        amount = 0
         if buyer.id > 0 and self.product.category == 1:
             amount = self.discounted_price * 0.05
             cb = CashBack(sale=self, investor=buyer, amount=amount)
             cb.created_by = staff
             cb.save()
-
+        return amount
 
     class Meta:
         verbose_name = "Sale"
