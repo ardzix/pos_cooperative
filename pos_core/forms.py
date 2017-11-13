@@ -68,7 +68,6 @@ class MasterInvestorForm(ModelForm):
         model = Investor
         exclude = settings.EXCLUDE_FORM_FIELDS 
         widgets = {
-            'member_id': TextInput(attrs={'class':'form-control'}),
             'investor_type': Select(attrs={'class':'form-control select2'}),
         }
 

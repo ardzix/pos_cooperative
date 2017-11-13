@@ -54,7 +54,6 @@ class Profile(BaseModelUnique):
 
 class Investor(BaseModelUnique):
     investor_type = models.PositiveIntegerField(choices=INVESTOR_TYPE_CHOICES, default=1)
-    member_id = models.CharField(max_length=100)
 
     def __unicode__(self):
         return self.created_by.username

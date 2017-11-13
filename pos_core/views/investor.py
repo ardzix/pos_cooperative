@@ -34,7 +34,7 @@ class InvestorView(ProtectedMixin, TemplateView):
             deleted_at__isnull = True
         )
 
-        defer = ['id62', 'member_id', 'created_by', 'created_at']
+        defer = ['id62', 'created_by', 'created_at']
 
         d = Datatable(request, qs, defer)
         return d.get_data()
