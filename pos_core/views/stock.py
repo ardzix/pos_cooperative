@@ -74,27 +74,36 @@ class StockFormView(ProtectedMixin, TemplateView):
         edit = request.GET.get("edit")
 
         if edit:
-            form = StockForm(instance=Stock.objects.get(id62=edit))
+            is_edit = True
+            stock = Stock.objects.get(id62=edit)
+            form = StockForm(instance=stock, initial={'latest_stock':stock.latest_stock})
         else:
+            is_edit = False
             form = StockForm()
-
-        return self.render_to_response({"form":form})
+            
+        return self.render_to_response({
+            "is_edit":is_edit,
+            "form":form,
+        })
 
     def post(self, request):
         edit = request.GET.get("edit")
 
         if edit:
+            is_edit = True
             form = StockForm(request.POST, instance=Stock.objects.get(id62=edit))
         else:
+            is_edit = False
             form = StockForm(request.POST)
 
         if form.is_valid():
             stock = form.save(commit=False)
             if edit:
                 stock.updated_by = request.user
+                stock.latest_stock = form.cleaned_data['latest_stock']
             else:
                 stock.created_by = request.user
-            stock.latest_stock = stock.first_stock
+                stock.latest_stock = stock.first_stock
             stock.save()
 
             messages.success(request, 'Stock (%s) has been saved.' % stock.product)
@@ -103,4 +112,7 @@ class StockFormView(ProtectedMixin, TemplateView):
                 reverse("core:stock")
             )
         else:
-            return self.render_to_response({"form":form})
+            return self.render_to_response({
+                "is_edit":is_edit,
+                "form":form,
+            })

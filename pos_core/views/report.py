@@ -1,8 +1,8 @@
 
 from libs.views import ProtectedMixin
 from django.views.generic import TemplateView
-from pos_core.models import Product, Discount, DiscountProduct, Sale, Checkout, Investor
-from pos_core.forms import ReportForm
+from pos_core.models import Product, Discount, DiscountProduct, Sale, Checkout, Investor, CashBack
+from pos_core.forms import ReportForm, CashbackForm
 from django.contrib import messages
 from django.shortcuts import redirect, reverse
 from django.contrib.auth.models import User
@@ -56,3 +56,12 @@ class ReportXLSView(XLSXResponse, ProtectedMixin):
                         ])
 
         return self.render_to_response({'data':xls})
+
+class CashbackView(ProtectedMixin, TemplateView):
+    template_name = "report/cashback.html"
+
+    def get(self, request):
+        form = CashbackForm()
+        return self.render_to_response({"form":form})
+        
+    

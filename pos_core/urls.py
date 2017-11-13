@@ -38,5 +38,6 @@ urlpatterns = [
 
     url(r'^report/$', ReportView.as_view(), name='report'),
     url(r'^report/download/$', ReportXLSView.as_view(), name='report-download'),
+    url(r'^cashback/$', CashbackView.as_view(), name='cashback'),
     
 ]

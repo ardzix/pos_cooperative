@@ -105,6 +105,11 @@ class ProductForm(ModelForm):
         }
 
 class StockForm(ModelForm):
+    latest_stock = IntegerField(
+        required=False
+    )
+    latest_stock.widget = NumberInput(attrs={'class':'form-control'})
+
     class Meta:
         model = Stock
         exclude = settings.EXCLUDE_FORM_FIELDS + ("latest_stock", "last_opnamed_at", "last_opnamed_at_timestamp", "last_opnamed_by")
@@ -214,3 +219,13 @@ class ReportForm(forms.Form):
         required = False
     )
     end_date.widget = DateTimeInput(attrs={'class':'form-control'})
+
+class CashbackForm(forms.Form):
+    
+    investor = ModelChoiceField(
+        queryset = Investor.objects.filter(
+            deleted_at__isnull = True,
+        ),
+        required=False
+    )
+    investor.widget = Select(attrs={'class':'form-control select2'})

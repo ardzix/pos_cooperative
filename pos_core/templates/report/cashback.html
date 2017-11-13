@@ -8,57 +8,20 @@
         <div class="col-xs-12">
             <div class="box box-info">
                 <div class="box-header with-border">
-                  <h3 class="box-title">Stock Form</h3>
+                  <h3 class="box-title">Report</h3>
                 </div>
-                <form role="form" method="POST">
+                <form role="form" method="GET" action="{% url 'core:report-download' %}">
                     <!-- /.box-header -->
                     <div class="box-body">
-                        {% csrf_token %}
-
-                        {% if is_edit %}
 
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="form-group required">
-                                    <label>{{form.product.label}}</label>
-                                    {{form.product}}
+                                <div class="form-group">
+                                    <label>{{form.investor.label}}</label>
+                                    {{form.investor}}
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group required">
-                                    <label>{{form.first_stock.label}}</label>
-                                    {{form.first_stock}}
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group required">
-                                    <label>{{form.latest_stock.label}}</label>
-                                    {{form.latest_stock}}
-                                </div>
-                            </div>
-                        </div>
-
-                        {% else %}
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group required">
-                                    <label>{{form.product.label}}</label>
-                                    {{form.product}}
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group required">
-                                    <label>{{form.first_stock.label}}</label>
-                                    {{form.first_stock}}
-                                </div>
-                            </div>
-                        </div>
-
-                        {% endif %}
-
                         
                     <div class="box-footer">
 
@@ -122,6 +85,7 @@
 <script>
     
     $(".select2").select2();
+
 </script>
 
 {% endblock %}
