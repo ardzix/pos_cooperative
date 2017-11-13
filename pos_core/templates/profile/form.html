@@ -16,22 +16,31 @@
                         {% csrf_token %}
 
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-group required">
                                     <label>{{form.user.username.label}}</label>
                                     {{form.user.username}}
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{form.user.password.label}}</label>
+                                    {{form.user.password}}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
                                 <div class="form-group required">
                                     <label>{{form.user.email.label}}</label>
                                     {{form.user.email}}
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>{{form.user.password.label}}</label>
-                                    {{form.user.password}}
+                                    <label>{{form.profile.phone.label}}</label>
+                                    {{form.profile.phone}}
                                 </div>
                             </div>
                         </div>

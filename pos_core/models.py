@@ -29,6 +29,7 @@ class Profile(BaseModelUnique):
     gender = models.PositiveIntegerField(choices=GENDER_CHOICES, default=3)
     birthday = models.DateField(blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
+    phone = models.CharField(max_length=25)
     background_cover = models.ImageField(
         upload_to = generate_name,
         storage = STORAGE_BACKGROUND_COVER,

@@ -25,7 +25,7 @@ class UserForm(ModelForm):
             'username': TextInput(attrs={'class':'form-control'}),
             'first_name': TextInput(attrs={'class':'form-control'}),
             'last_name': TextInput(attrs={'class':'form-control'}),
-            'email': TextInput(attrs={'class':'form-control'}),
+            'email': EmailInput(attrs={'class':'form-control'}),
         }
 
 
@@ -44,6 +44,7 @@ class ProfileForm(ModelForm):
         widgets = {
             'display_name': TextInput(attrs={'class':'form-control'}),
             'short_name': TextInput(attrs={'class':'form-control'}),
+            'phone': TextInput(attrs={'class':'form-control'}),
             'gender': Select(attrs={'class':'form-control select2'}),
             'is_verified': CheckboxInput(attrs={'checked':'checked'}),
         }
