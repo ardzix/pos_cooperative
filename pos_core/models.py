@@ -166,7 +166,7 @@ class Discount(BaseModelGeneric):
     reduction = models.PositiveIntegerField(default=0)
 
     def __unicode__(self):
-        return self.display_name
+        return "%s%% (%s)" % (self.reduction,self.display_name)
 
     class Meta:
         verbose_name = "Discount"
@@ -249,6 +249,20 @@ class Sale(BaseModelGeneric):
             cb.save()
         return amount
 
+    def get_final_price(self):
+        return self.product.get_discounted_price_int()
+
+    def get_final_amount(self):
+        if self.discount:
+            return self.amount - self.product.get_discounted_price_int()
+        else:
+            return self.amount
+
+    def get_discount_name(self):
+        if self.discount:
+            return self.discount.__unicode__()
+        else:
+            return "-"
     class Meta:
         verbose_name = "Sale"
         verbose_name_plural = "Sales"

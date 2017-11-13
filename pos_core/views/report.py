@@ -23,7 +23,7 @@ class ReportXLSView(XLSXResponse, ProtectedMixin):
     def get(self, request):
 
         checkout = Checkout.objects.filter(created_at__gte=request.GET.get("start_date"), created_at__lte=request.GET.get("end_date")+" 23:59").all()
-        xls = [ ["ID", "Tanggal", "Total Pembelian", "Nama Produk", "Diskon", "Harga", "Qty", "Total Harga", "Investor"], ]
+        xls = [ ["ID", "Investor", "Tanggal", "Total pembelian", "Nama produk", "Harga", "Diskon", "Harga setelah diskon", "Qty", "Total harga"], ]
         checkout_id_temp = ""
         created_at_temp = ""
         paid_temp = ""
@@ -33,35 +33,26 @@ class ReportXLSView(XLSXResponse, ProtectedMixin):
                 if checkout_id_temp != c.id62:
                     checkout_id = c.id62
                     checkout_id_temp = c.id62
+                    created_at = c.created_at.strftime("%d/%m/%y")
+                    price = c.price
+                    investor = i.created_by.first_name+" "+i.created_by.last_name
                 else:
                     checkout_id = ""
-
-                if created_at_temp != c.created_at.strftime("%d/%m/%y"):
-                    created_at = c.created_at.strftime("%d/%m/%y")
-                    created_at = c.created_at.strftime("%d/%m/%y")
-                else:
                     created_at = ""
-
-                if paid_temp != c.paid:
-                    paid = c.paid
-                    paid = c.paid
-                else:
-                    paid = ""
-
-                discount = "-"
-                if i.discount:
-                    discount = i.discount.__unicode__()
+                    price = ""
+                    investor = ""
 
                 xls.append([
                             checkout_id,
+                            investor,
                             created_at,
-                            paid,
+                            price,
                             i.product.__unicode__(),
-                            discount,
                             i.price,
+                            i.get_discount_name(),
+                            i.get_final_price(),
                             i.qty,
-                            i.amount,
-                            i.created_by.first_name+" "+i.created_by.last_name,
+                            i.get_final_amount(),
                         ])
 
         return self.render_to_response({'data':xls})
