@@ -230,11 +230,11 @@
     $(".select2").select2();
 
     $(".form-quantity").keyup(function(){
-        var price = parseInt($("#id_sale-"+$(this).attr("data-index")+"-discount_price").val().replace(",", ""))
+        var price = parseInt($("#id_sale-"+$(this).attr("data-index")+"-discount_price").val())
         if(!price){
-            price = parseInt($("#id_sale-"+$(this).attr("data-index")+"-price").val().replace(",", ""))
+            price = parseInt($("#id_sale-"+$(this).attr("data-index")+"-price").val())
         }
-        $("#id_sale-"+$(this).attr("data-index")+"-total_price").val((price * parseInt($(this).val())).toLocaleString())
+        $("#id_sale-"+$(this).attr("data-index")+"-total_price").val((price * parseInt($(this).val())))
         count_total()
     })
 
@@ -243,12 +243,12 @@
             var index = ($('#id_sale-TOTAL_FORMS').val()-1)
             $("#id_sale-"+index+"-product").val(data.data.name)
             $("#id_sale-"+index+"-product_id62").val(data.data.id62)
-            $("#id_sale-"+index+"-price").val(data.data.price.toLocaleString())
+            $("#id_sale-"+index+"-price").val(data.data.price)
             $("#id_sale-"+index+"-quantity").val(1)
             $("#id_sale-"+index+"-quantity").attr({"data-index":($('#id_sale-TOTAL_FORMS').val()-1), "style":"", "readonly":false})
-            $("#id_sale-"+index+"-discount").val(data.data.discount.toLocaleString())
-            $("#id_sale-"+index+"-discount_price").val(data.data.discount_price.toLocaleString())
-            $("#id_sale-"+index+"-total_price").val(data.data.int_discount_price.toLocaleString())
+            $("#id_sale-"+index+"-discount").val(data.data.discount)
+            $("#id_sale-"+index+"-discount_price").val(data.data.discount_price)
+            $("#id_sale-"+index+"-total_price").val(data.data.int_discount_price)
 
             cloneMore('div.sale-formset:last');
 
@@ -264,8 +264,8 @@
     })
 
     $("#modal-paid").keyup(function(){
-        var price_item = parseInt($("#modal-price").val().replace(",", "").replace("Rp ", ""))
-        console.log($("#modal-price").val().replace(",", "").replace("Rp. ", ""))
+        var price_item = parseInt($("#modal-price").val().replace("Rp ", ""))
+        console.log($("#modal-price").val().replace("Rp. ", ""))
         $("#modal-return").html("Rp. " + ($(this).val() - price_item).toLocaleString())
         
     })
@@ -294,7 +294,7 @@
     function count_total(){
         var price_item = 0
         $(".form-total_price").each(function(){
-            var this_price_item = parseInt($(this).val().replace(",", ""))
+            var this_price_item = parseInt($(this).val())
             if(this_price_item){
                 price_item += this_price_item
             }

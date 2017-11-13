@@ -101,10 +101,10 @@ class SaleView(ProtectedMixin, TemplateView):
                     product.sale(int(s.cleaned_data['quantity']))
 
                     item_sale_amout += item_sale.amount
-                    item_sale_text += "%s       x%d   %d\n" % (product.display_name, item_sale.qty, item_sale.amount)
+                    item_sale_text += "%s    @%d   x%d   %d\n" % (product.display_name, item_sale.price, item_sale.qty, item_sale.amount)
                     item_sale_cashback_amout += cashback
                     if product.applied_discount():
-                        amount_discounted = item_sale.price - item_sale.discounted_price
+                        amount_discounted = item_sale.qty * (item_sale.price - item_sale.discounted_price)
                         item_sale_discount_text += "%s       %d%%   %d\n" % (product.display_name, item_sale.discount.reduction, amount_discounted)                    
                         item_sale_discount_amout += amount_discounted
                 else:
