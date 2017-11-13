@@ -152,7 +152,7 @@ EXCLUDE_FORM_FIELDS = (
 
 # Printer Settings
 PRINTER_CONF = {
-    "print_on" : False,
+    "print_on" : True,
     "usb_conf" : {
         "vendor_id" : 0x0483,
         "product_id" : 0x5720,
