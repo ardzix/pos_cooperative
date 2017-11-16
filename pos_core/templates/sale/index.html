@@ -3,6 +3,17 @@
 
 
 {% block content %}
+<style>
+    .bigdrop {
+        background-color: rgba(255, 255, 255, 1) ;
+        position: absolute;
+        margin-top: -220px; 
+        height: 220px;
+        width: 100%;
+        overflow: auto;
+}
+</style>
+
 <section class="content">
       <div class="row">
         <div class="col-xs-12">
@@ -102,7 +113,7 @@
 
                         <div class="row">
                             <div class="col-sm-8">
-                                <div class="form-group required">
+                                <div class="form-group required" id="myModal">
                                    
                                 </div>
                             </div>
@@ -226,16 +237,24 @@
 <script src="{% static 'backend/plugins/input-mask/jquery.inputmask.extensions.js' %}"></script>
                
 <script>
+
+    $(document).ready(function(){
+        select2focus()
+    })
     
-    $(".select2").select2();
+    $("#{{form.stock.product.auto_id}}").select2({
+        dropdownCssClass : 'bigdrop',
+        placeholder: "Produk dibeli"
+    });
+
+    $("#{{form.buyer.investor.auto_id}}").select2()
+
+    $(".form-quantity").change(function(){
+        count_price($(this))
+    })
 
     $(".form-quantity").keyup(function(){
-        var price = parseInt($("#id_sale-"+$(this).attr("data-index")+"-discount_price").val())
-        if(!price){
-            price = parseInt($("#id_sale-"+$(this).attr("data-index")+"-price").val())
-        }
-        $("#id_sale-"+$(this).attr("data-index")+"-total_price").val((price * parseInt($(this).val())))
-        count_total()
+        count_price($(this))
     })
 
     $("#{{form.stock.product.auto_id}}").change(function(){
@@ -259,7 +278,7 @@
                 }
                 i++
             })
-
+            select2focus()
         })
     })
 
@@ -269,6 +288,16 @@
         $("#modal-return").html("Rp. " + ($(this).val() - price_item).toLocaleString())
         
     })
+
+    function count_price(el){
+
+        var price = parseInt($("#id_sale-"+el.attr("data-index")+"-discount_price").val())
+        if(!price){
+            price = parseInt($("#id_sale-"+el.attr("data-index")+"-price").val())
+        }
+        $("#id_sale-"+el.attr("data-index")+"-total_price").val((price * parseInt(el.val())))
+        count_total()
+    }
 
     function form_submit(par){
         $("#form-parameter").val(par)
@@ -326,6 +355,11 @@
             $(selector).after(newElement);
             count_total()
         }
+
+    function select2focus(){
+        $("#{{form.stock.product.auto_id}}").select2("open")
+        $("#{{form.stock.product.auto_id}}").select2("focus")
+    }
     </script>
 </script>
 

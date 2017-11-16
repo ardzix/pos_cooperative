@@ -10,10 +10,11 @@
                 <div class="box-header with-border">
                   <h3 class="box-title">Report</h3>
                 </div>
-                <form role="form" method="GET" action="{% url 'core:report-download' %}">
+                <form role="form" id="cashback-form" method="POST">
                     <!-- /.box-header -->
                     <div class="box-body">
-
+                        {% csrf_token %}
+                            
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
@@ -22,10 +23,35 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
                         
-                    <div class="box-footer">
+                    <div class="box-footer" id="cashback-data">
 
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Total cashback</label>
+                                    <div class="form-control">Rp. <span id="total-cashback">0</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" id="close-cashback" class="btn btn-primary">Ambil cashback</button>                        
+                        
+                        <table id="mainTable" class="table table-bordered table-striped" style="margin-top:10px">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Produk</th>
+                                    <th>Cashback</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body">
+
+                            </tbody>
+                            
+                        </table>
+
                     </div>
                 </form>
             </div>
@@ -85,6 +111,41 @@
 <script>
     
     $(".select2").select2();
+    $("#{{form.investor.auto_id}}").change(function(){
+        $.get("{% url 'core:cashback-ajax' %}", {'investor_id':$(this).val()}, function(data){
+            if (data.success) {
+                console.log(data.data)
+                $("#total-cashback").html(data.data.total_amount)
+                var tbody = ``
+                for (const key in data.data.details) {
+                    if (data.data.details.hasOwnProperty(key)) {
+                        const element = data.data.details[key];
+                        tbody += `
+                            <tr>
+                                <td>`+element.fields.created_at+`</td>
+                                <td>`+element.product+`</td>
+                                <td>Rp. `+element.fields.amount+`</td>
+                            </tr>
+                        `
+                    }
+                }
+                $("#table-body").html(tbody)
+            }else{
+                alert(data.error)
+                $("#total-cashback").html("0")
+                $("#table-body").html("")                
+            }
+        })
+    })
+    $("#close-cashback").click(function(){
+        if ($("#total-cashback").html() == "0") {
+            alert("Investor belum mendapatkan cashback")
+        }else{
+            if (confirm('Investor akan menarik cashback sebesar Rp.'+$("#total-cashback").html()+'. Apakah anda yakin untuk memproses penarikan?')) {
+                $("#cashback-form").submit()
+            }
+        }
+    })
 
 </script>
 

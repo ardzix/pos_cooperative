@@ -145,6 +145,11 @@ class BaseModelGeneric(_BaseAbstract):
         abstract = True
 
 class BaseModelUnique(_BaseAbstract):
+
+    def user_unicode(self):
+        return  u'%s %s' % (self.first_name, self.last_name)
+    User.__unicode__ = user_unicode
+
     created_by = models.OneToOneField(User, db_index=True, related_name="%(app_label)s_%(class)s_created_by")
 
     class Meta:

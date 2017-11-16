@@ -56,7 +56,8 @@ class Investor(BaseModelUnique):
     investor_type = models.PositiveIntegerField(choices=INVESTOR_TYPE_CHOICES, default=1)
 
     def __unicode__(self):
-        return self.created_by.username
+        profile = Profile.objects.get(created_by=self.created_by)
+        return "%s - %s %s" % (profile.phone, self.created_by.first_name, self.created_by.last_name)
 
     class Meta:
         verbose_name = "Investor"
@@ -243,7 +244,7 @@ class Sale(BaseModelGeneric):
     def sold(self, staff, buyer):
         amount = 0
         if buyer.id > 0 and self.product.category == 1:
-            amount = self.discounted_price * 0.05
+            amount = self.qty * self.discounted_price * 0.05
             cb = CashBack(sale=self, investor=buyer, amount=amount)
             cb.created_by = staff
             cb.save()
@@ -275,6 +276,18 @@ class CashBack(BaseModelGeneric):
     closed_at_timestamp = models.PositiveIntegerField(db_index=True, blank=True, null=True)
     closed_by = models.ForeignKey(User, db_index=True, blank=True, null=True, related_name="%(app_label)s_%(class)s_close_by")
     
+    def save(self, *args, **kwargs):
+        now = timezone.now()
+        if self.closed_by:
+            if not self.closed_at:
+                self.closed_at = now
+                self.closed_at_timestamp = to_timestamp(self.closed_at)
+
+        return super(CashBack, self).save(*args, **kwargs)
+
+    def get_product_name(self):
+        return "%s (x%s)" % (self.sale.product.display_name, self.sale.qty)
+
     class Meta:
         verbose_name = "Cashback"
         verbose_name_plural = "Cashbacks"

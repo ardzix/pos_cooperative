@@ -46,7 +46,8 @@ class InvestorFormView(ProtectedMixin, TemplateView):
         edit = request.GET.get("edit")
 
         if edit:
-            form = MasterInvestorForm(instance=Investor.objects.get(id62=edit))
+            investor = Investor.objects.get(id62=edit)
+            form = MasterInvestorForm(instance=investor, initial={'user':investor.created_by_id})
         else:
             form = MasterInvestorForm()
 

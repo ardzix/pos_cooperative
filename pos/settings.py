@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'compressor',
+    'rest_framework',
 
 ]
 
@@ -152,7 +153,7 @@ EXCLUDE_FORM_FIELDS = (
 
 # Printer Settings
 PRINTER_CONF = {
-    "print_on" : True,
+    "print_on" : False,
     "usb_conf" : {
         "vendor_id" : 0x0483,
         "product_id" : 0x5720,
