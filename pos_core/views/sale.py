@@ -155,10 +155,11 @@ class SaleView(ProtectedMixin, TemplateView):
             else:
                 receipt.text('Terimakasih Telah Berbelanja')                
 
-            
-
             if p_conf['cut_paper']:
                 receipt.cut()
+
+            if p_conf['kick_drawer']:
+                receipt.cashdraw(2)
                 
             printer._raw(receipt.output)
 
