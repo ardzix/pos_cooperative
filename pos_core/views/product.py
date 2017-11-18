@@ -108,11 +108,10 @@ class ProductAjaxView(ProtectedMixin, TemplateView):
         barcode = Barcode()
 
         while qty>0:    
-            # if not is_right:
-            #     barcode.prints(code)
-            # else:
-            #     barcode.prints(code, align="right")
-            print qty
+            if not is_right:
+                barcode.prints(code)
+            else:
+                barcode.prints(code, align="right")
             qty -= 1
 
         return JSONResponse({
