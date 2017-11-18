@@ -99,20 +99,20 @@ class ProductAjaxView(ProtectedMixin, TemplateView):
 
         import re
         code = re.sub("\D", "", product.sku)
-        print len(code)
         if not len(code) == 13:
             return JSONResponse({
                     'success' : False,
                     'error_message' : "Barcode harus angka 13 digit dan data telah di save"
                 })
 
-
         barcode = Barcode()
 
-        if not is_right:
-            barcode.prints(code)
-        else:
-            barcode.prints(code, align="right")
+        while qty>0:    
+            if not is_right:
+                barcode.prints(code)
+            else:
+                barcode.prints(code, align="right")
+            qty -= 1
 
         return JSONResponse({
                 'success' : True,
