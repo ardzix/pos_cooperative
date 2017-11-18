@@ -56,8 +56,12 @@ class Investor(BaseModelUnique):
     investor_type = models.PositiveIntegerField(choices=INVESTOR_TYPE_CHOICES, default=1)
 
     def __unicode__(self):
-        profile = Profile.objects.get(created_by=self.created_by)
-        return "%s - %s %s" % (profile.phone, self.created_by.first_name, self.created_by.last_name)
+        profile = Profile.objects.filter(created_by=self.created_by).first()
+        if profile:
+            return "%s - %s %s" % (profile.phone, self.created_by.first_name, self.created_by.last_name)
+        else:
+            return "%s %s" % (self.created_by.first_name, self.created_by.last_name)
+            
 
     class Meta:
         verbose_name = "Investor"
