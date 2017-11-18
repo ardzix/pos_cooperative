@@ -37,16 +37,22 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label>{{form.display_name.label}}</label>
                                     {{form.display_name}}
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label>{{form.short_name.label}}</label>
                                     {{form.short_name}}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>{{form.sku.label}}</label>
+                                    {{form.sku}}
                                 </div>
                             </div>
                         </div>
@@ -66,8 +72,10 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>{{form.sku.label}}</label>
-                                    {{form.sku}}
+                                    <label>Jumlah Barcode</label> <span style="font-weight:200"><i>*diisi hanya saat print</i></span><br>
+                                    <input type="decimal" id="print-qty" style="height:34px;border:1px solid #ccc;box-shadow:0">
+                                    <button class="btn btn-info pull-right" type="button" onclick="print_barcode(true)">Print Kanan</button>
+                                    <button class="btn btn-info pull-right" type="button" onclick="print_barcode(false)" style="margin-right:10px">Print Kiri</button>
                                 </div>
                             </div>
                         </div>
@@ -176,6 +184,21 @@
                 .replace(/[^\w ]+/g,'')
                 .replace(/ +/g,'-')
                 ;
+        }
+
+        function print_barcode(is_right){
+            par = {
+                'is_right' : is_right,
+                'qty' : $("#print-qty").val(),
+                'id62' : "{{id62}}"
+            }
+            $.get("{% url 'core:product-ajax' %}", par, function(data){
+                if (data.success) {
+                    alert("Printing")
+                }else{
+                    alert(data.error_message)
+                }
+            })
         }
     </script>
 

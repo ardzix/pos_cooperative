@@ -6,6 +6,8 @@ from libs.json_response import JSONResponse
 from pos_core.forms import ProductForm
 from django.contrib import messages
 from django.shortcuts import redirect, reverse
+from libs.barcode import Barcode
+
 
 class ProductView(ProtectedMixin, TemplateView):
     template_name = "product/index.html"
@@ -46,7 +48,7 @@ class ProductFormView(ProtectedMixin, TemplateView):
         else:
             form = ProductForm()
 
-        return self.render_to_response({"form":form})
+        return self.render_to_response({"form":form, "id62":edit})
 
     def post(self, request):
         edit = request.GET.get("edit")
@@ -71,3 +73,47 @@ class ProductFormView(ProtectedMixin, TemplateView):
             )
         else:
             return self.render_to_response({"form":form})
+
+class ProductAjaxView(ProtectedMixin, TemplateView):
+    template_name = "product/index.html"
+
+    def get(self, request):
+        is_right = False
+        if request.GET.get("is_right") == "true":
+            is_right = True
+
+        qty = request.GET.get("qty")
+        id62 = request.GET.get("id62")
+        if id62 == "None":
+            return JSONResponse({
+                    'success' : False,
+                    'error_message' : "Print gagal, pastikan data telah disimpan di database"
+                })
+
+        product = Product.objects.filter(id62=id62).first()
+        if not product:
+            return JSONResponse({
+                    'success' : False,
+                    'error_message' : "Print gagal, data tidak tersedia"
+                })
+
+        import re
+        code = re.sub("\D", "", product.sku)
+        print len(code)
+        if not len(code) == 13:
+            return JSONResponse({
+                    'success' : False,
+                    'error_message' : "Barcode harus angka 13 digit dan data telah di save"
+                })
+
+
+        barcode = Barcode()
+
+        if not is_right:
+            barcode.prints(code)
+        else:
+            barcode.prints(code, align="right")
+
+        return JSONResponse({
+                'success' : True,
+            })

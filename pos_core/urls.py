@@ -24,6 +24,7 @@ urlpatterns = [
 
     url(r'^product/$', ProductView.as_view(), name='product'),    
     url(r'^product/form/$', ProductFormView.as_view(), name='product-form'),
+    url(r'^product/ajax/$', ProductAjaxView.as_view(), name='product-ajax'),
 
     url(r'^stock/$', StockView.as_view(), name='stock'),    
     url(r'^stock/form/$', StockFormView.as_view(), name='stock-form'),
