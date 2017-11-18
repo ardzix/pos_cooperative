@@ -51,15 +51,8 @@ class ProfileForm(ModelForm):
 
 
 class MasterInvestorForm(ModelForm):
-    already_added = []
-
-    for v in Investor.objects.filter(deleted_at__isnull = True).all():
-        already_added.append(v.created_by.id)
-
     user = ModelChoiceField (
-        queryset = User.objects.exclude(
-            id__in = already_added
-        ),
+        queryset = User.objects.all(),
         required=False
     )
     user.widget = Select(attrs={'class':'form-control select2'})

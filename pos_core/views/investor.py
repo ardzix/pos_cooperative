@@ -51,6 +51,13 @@ class InvestorFormView(ProtectedMixin, TemplateView):
         else:
             form = MasterInvestorForm()
 
+        already_added = []
+
+        for v in Investor.objects.filter(deleted_at__isnull = True).all():
+            already_added.append(v.created_by.id)
+        
+        form.fields["user"].queryset = form.fields["user"].queryset.exclude(id__in = already_added)
+
         return self.render_to_response({"form":form})
 
     def post(self, request):
