@@ -252,6 +252,7 @@ class Barcode(object):
             dummy._raw(TXT_ALIGN_LT)
         else:
             dummy._raw(TXT_ALIGN_RT)
+        dummy._raw(PD_P50)
         dummy._raw(BARCODE_HEIGHT + six.int2byte(120))
         dummy._raw(BARCODE_WIDTH + six.int2byte(2))
         dummy._raw(BARCODE_FONT_A)
