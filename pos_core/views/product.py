@@ -82,7 +82,7 @@ class ProductAjaxView(ProtectedMixin, TemplateView):
         if request.GET.get("is_right") == "true":
             is_right = True
 
-        qty = request.GET.get("qty")
+        qty = int(request.GET.get("qty"))
         id62 = request.GET.get("id62")
         if id62 == "None":
             return JSONResponse({
@@ -108,10 +108,11 @@ class ProductAjaxView(ProtectedMixin, TemplateView):
         barcode = Barcode()
 
         while qty>0:    
-            if not is_right:
-                barcode.prints(code)
-            else:
-                barcode.prints(code, align="right")
+            # if not is_right:
+            #     barcode.prints(code)
+            # else:
+            #     barcode.prints(code, align="right")
+            print qty
             qty -= 1
 
         return JSONResponse({
