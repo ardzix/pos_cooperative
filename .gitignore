@@ -3,3 +3,4 @@
 *.pyc
 *.DS_Store
 *migrations*
+pos/settings.py

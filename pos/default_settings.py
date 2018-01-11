@@ -1,3 +1,16 @@
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 
+# Author: Arif Dzikrullah
+#         ardzix@hotmail.com
+# 
+# File Created: Thursday, 11th January 2018 11:59:14 am
+# Last Modified: Thursday, 11th January 2018 12:00:31 pm
+# Modified By: Arif Dzikrullah (ardzix@hotmail.com)
+# 
+# Give the best to the world
+# Copyright - 2018 Ardz.Co
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 """
 Django settings for pos project.
 
@@ -19,7 +32,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'o#cj1=ho8pjx5w%!5z*ak&4u=kynxv-zw76+xa2ubq0x(z0bq6'
+SECRET_KEY = 'your_secret_key'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -79,12 +92,8 @@ WSGI_APPLICATION = 'pos.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'pos',
-        'USER': 'postgres',
-        'PASSWORD': 'asdf1234',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'mydatabase',
     }
 }
 
